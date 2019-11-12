@@ -1,0 +1,253 @@
+<style type="text/css">
+  body {
+    color: #566787;
+  background: #f5f5f5;
+  font-family: 'Varela Round', sans-serif;
+  font-size: 13px;
+  }
+  table{
+  table-layout: fixed;
+  
+  }
+  .table-wrapper {
+    background: #fff;
+    padding: 20px 25px;
+    margin: 30px 0;
+  border-radius: 3px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+  }
+  .table-title {
+  padding-bottom: 15px;
+  background: #299be4;
+  color: #fff;
+  padding: 16px 30px;
+  margin: -20px -25px 10px;
+  border-radius: 3px 3px 0 0;
+  }
+  .table-title h2 {
+  margin: 5px 0 0;
+  font-size: 24px;
+  }
+  .table-title .btn {
+  color: #566787;
+  float: right;
+  font-size: 13px;
+  background: #fff;
+  border: none;
+  min-width: 50px;
+  border-radius: 2px;
+  border: none;
+  outline: none !important;
+  margin-left: 10px;
+  }
+  .table-title .btn:hover, .table-title .btn:focus {
+    color: #566787;
+  background: #f2f2f2;
+  }
+  .table-title .btn i {
+  float: left;
+  font-size: 21px;
+  margin-right: 5px;
+  }
+  .table-title .btn span {
+  float: left;
+  margin-top: 2px;
+  }
+  table.table tr th, table.table tr td {
+    border-color: #e9e9e9;
+  padding: 12px 15px;
+  vertical-align: middle;
+  }
+  table.table tr th:first-child {
+  width: 60px;
+  }
+  table.table tr th:last-child {
+  width: 100px;
+  }
+  table.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #fcfcfc;
+  }
+  table.table-striped.table-hover tbody tr:hover {
+  background: #f5f5f5;
+  }
+  table.table th i {
+    font-size: 13px;
+    margin: 0 5px;
+    cursor: pointer;
+  }	
+  table.table td:last-child i {
+  opacity: 0.9;
+  font-size: 22px;
+    margin: 0 5px;
+  }
+  table.table td a {
+  font-weight: bold;
+  color: #566787;
+  display: inline-block;
+  text-decoration: none;
+  }
+  table.table td a:hover {
+  color: rgb(65, 187, 224);
+  }
+  table.table td a.edit {
+    color: rgb(23, 199, 23);
+  }
+  table.table td a.delete {
+    color: #F44336;
+  }
+  table.table td i {
+    font-size: 19px;
+  }
+  table.table .avatar {
+  border-radius: 40%;
+  vertical-align: middle;
+  margin-right: 10px;
+    width: 40px;
+    height: 40px;
+  }
+  .status {
+  font-size: 30px;
+  margin: 2px 2px 0 0;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 10px;
+  }
+  .text-success {
+    color: #10c469;
+  }
+  .text-info {
+    color: #62c9e8;
+  }
+  .text-warning {
+    color: #FFC107;
+  }
+  .text-danger {
+    color: #ff5b5b;
+  }
+  .pagination {
+    float: right;
+    margin: 0 0 5px;
+  }
+  .pagination li a {
+    border: none;
+    font-size: 13px;
+    min-width: 30px;
+    min-height: 30px;
+    color: #999;
+    margin: 0 2px;
+    line-height: 30px;
+    border-radius: 2px !important;
+    text-align: center;
+    padding: 0 6px;
+  }
+  .pagination li a:hover {
+    color: #666;
+  }	
+  .pagination li.active a, .pagination li.active a.page-link {
+    background: #03A9F4;
+  }
+  .pagination li.active a:hover {        
+    background: #0397d6;
+  }
+  .pagination li.disabled i {
+    color: #ccc;
+  }
+  .pagination li i {
+    font-size: 16px;
+    padding-top: 6px
+  }
+  .hint-text {
+    float: left;
+    margin-top: 10px;
+    font-size: 13px;
+  }
+  </style>
+  
+  <div class="container">
+    <div class="table-wrapper">
+        <div class="table-title">
+          <div class="row">
+            <div class="col-sm-5">
+              <h2>Branches <b>Management</b></h2>
+            </div>
+            <div class="col-sm-7">
+              <a href="javascript:branches_list();" class="btn btn-primary"><i class="material-icons">refresh</i> <span>Refresh</span></a>
+              <a data-toggle="modal" href="#addBranchModal" class="btn btn-primary"><i class="material-icons">&#xE147;</i> <span>Add New Branch</span></a>
+              <a data-toggle="modal" href="#underConstruction" class="btn btn-primary"><i class="material-icons">&#xE24D;</i> <span>Export to Excel</span></a>						
+            </div>
+          </div>
+        </div>
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Picture</th>						
+              <th>Name</th>						
+              <th>Addres</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% branches.forEach(function(branch) { %>
+              <% if (branch.status != "deleted") {%>
+                <tr>
+                  <td><%=branch.id%></td>
+                  <td> <img src="<%=branch.src%>" alt="Image not found" onerror="this.onerror=null;this.src='images/img_bank.jpg';" class="avatar"></a></td>
+                  <td><%=branch.name%></a></td>
+                  <td><%=branch.addres%></td>
+                  <td><%=branch.status%></td>
+                  <td>
+                    <span title="Edit" data-toggle="tooltip">
+                      <a data-toggle="modal" href="#updateBranchModal" class="edit" ><i class="material-icons">edit</i></a>
+                    </span><a href="javascript:deleteBranch(<%=branch.id%>);" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE5C9;</i></a>
+                  </td>
+                </tr>
+              <% } %>
+            <% }); %>
+          </tbody>
+        </table>
+    </div>
+  </div>    
+
+
+  <script>
+    $(document).ready(function(){
+      // $('.table tbody').on('click','.edit',function(e){
+      $('.table tr').on('click',function(e){
+        var _try    = $(this).children(); // $(this) is dr and his children(_try) are dt
+        var _id     = _try[0].innerText;
+        var _name   = _try[2].innerText;
+        var _addres    = _try[3].innerText;
+        var _status = _try[4].innerText;
+        //to remove the dot and space
+        // console.log(_status.substr(2));
+        
+        //**********fill the modal with the stored data**********
+        //set radio button the right value
+        // if(_status.includes("not")){
+        //   $('#update_not_active').prop('checked',true);
+        // }
+        // else{
+        //   $('#update_active').prop('checked',true);
+        // }
+        if(_status.includes("no")){
+          $('#branch_update_not_active').prop('checked',true);
+        }
+        else{
+          $('#branch_update_active').prop('checked',true);
+        }
+        //set the name and password
+        //html way:
+        //document.getElementById("updateUser_name").setAttribute("value",_name);
+        //document.getElementById("updateUser_password").setAttribute("value",_psw);
+        //jquery way:
+       
+        $("#update_branch_name_id").val(_name).change();
+        $("#update_branch_addres_id").val(_addres).change();
+        $("#branch_update_id_id").val(_id).change();
+      });
+    });
+    
+    </script>
+    

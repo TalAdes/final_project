@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Tal and Michael</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- <link rel="stylesheet" href="stylesheets/try_style.css"></script> -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/e296aac32f.js"></script>
+    <script src="javascripts/jquery.min.js"></script>
+    <script src="javascripts/bootstrap.min.js"></script>
+    <script src="javascripts/ss_browserified.js"></script>
+    <script src="javascripts/my_functions.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    -->
+    <style>
+        .parent {
+        padding: 1rem;
+        }
+
+        .child {
+        padding: 1rem;
+        }
+        .center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 33%;
+        }
+        /* Remove the navbar's default rounded borders and increase the bottom margin */
+        .navbar {
+            margin-bottom: 50px;
+            border-radius: 0;
+        }
+
+        /* Remove the jumbotron's default bottom margin */
+        .jumbotron {
+            margin-bottom: 0;
+        }
+
+        /* Add a gray background color and some padding to the footer */
+        footer {
+            background-color: #f2f2f2;
+            padding: 25px;
+        }
+
+        body {
+            color: #566787;
+            background: #f5f5f5;
+            font-family: 'Varela Round', sans-serif;
+            font-size: 13px;
+        }
+        form {border: 3px solid #f1f1f1;}
+
+        input[type=text], input[type=password] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        .cancelbtn {
+            width: auto;
+            padding: 10px 18px;
+            background-color: #f44336;
+            color:black;
+        }
+        input.addbtn {
+            width: auto;
+            padding: 10px 18px;
+            background-color: #0eb2b8;
+        }
+        .imgcontainer {
+            text-align: center;
+            margin: 24px 0 12px 0;
+        }
+
+        img.avatar {
+            width: 40%;
+            border-radius: 50%;
+        }
+
+        .container {
+            padding: 16px;
+        }
+
+        span.psw {
+            float: right;
+            padding-top: 16px;
+        }
+
+        /* Change styles for span and cancel button on extra small screens */
+        @media screen and (max-width: 300px) {
+            span.psw {
+                display: block;
+                float: none;
+            }
+            .cancelbtn {
+                width: 100%;
+            }
+        }
+    </style>
+    
+    
+
+</head>
+
+<body onhashchange="load_page_by_hash();">
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <div class="navbar-brand" style="width: auto; height: auto;">
+                <img src="images/logo.png" width="45px" height="40px">
+            </div>
+        </div>
+        
+        <div class="collapse navbar-collapse" id="myNavbar">
+      <ul id="navbar_id" class="nav navbar-nav">
+        <% if(isLogged == "yes") { %>
+            <li> <p style="color:white;"><b> <%= name %> is logged </b></p></li>
+        <% } %>
+        <li><a id="li_home" href="#" onclick="home(); return false;">Home</a></li>
+        <li><a id="li_flowers" href="#flowers" onclick="flowers_catalog(); return false;" >Flowers catalog</a></li>
+        <% if(isLogged == "yes") { %>
+            <% if(role == "admin") { %>
+            <li><a href="#" onclick="read_list(); return false; ">Users manage</a></li>
+            <li><a href="#" onclick="branches_list(); return false; ">Branches manage</a></li>
+            <% } %>
+            <% if(role == "worker") { %>
+            <li><a href="#" onclick="read_list(); return false; ">Users manage</a></li>
+            <% } %>
+        <% } %>
+        <li><a href="#" onclick="about(); return false;" >About</a></li>
+        <li><a href="#" onclick="contact(); return false;" >Contact</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <% if(isLogged == "yes") { %>
+            <li><button data-toggle="modal" href="#" onclick="logOut();">Log Out <span class="glyphicon glyphicon-log-out"></span></button></li>
+		    <li><button id = "edit_your_profile_button" data-toggle="modal" href="#editYourProfileButtonModal"><span class="glyphicon glyphicon-edit"></span> Edit Your Profile</button></li> 
+        <% } else {%>
+		    <li><button id = "log_in_button" data-toggle="modal" href="#loginModal"><span class="glyphicon glyphicon-log-in"></span> Log In</button></li> 
+		    <li><button id = "register_button" data-toggle="modal" href="#registerModal"><span class="fas fa-user-plus"></span> Register</button></li> 
+        <% } %>
+
+        
+      </ul>
+        </div>
+
+    </div>
+</nav>
+
+<div class="container" id = "changing_container">
+</div>
+
+
+
+<!-- these div willn't be shown because of class="modal fade" -->
+<div class="modal fade" id ="restore_container">
+    <div class="center" >
+        <!-- <form ref='uploadForm' 
+          id='uploadForm' 
+          action='/upload' 
+          method='post' 
+          encType="multipart/form-data">
+            <input type="file" name="upfile" />
+            <input type='submit' value='Upload!' />
+        </form>	 -->
+        <div class="panel panel-danger">
+            <div class="panel-heading">Welcom to my website</div>
+            <div class="panel-body"><img src="images/PetuniaProfilePictureImage.png" class="img-responsive"  style="width:100%" alt="it was supposed to be image of us"></div>
+            <!-- <div class="panel-body"><img src="images/me_tal.jpg" class="img-responsive"  style="width:100%" alt="Imggggggggggage"></div> -->
+            <div class="panel-footer">Probably the best <b> programmer</b> in the world</div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="loginModal" role="dialog">
+    <div class="modal-dialog">
+        <div id="fade_to_remove" class="modal-content">
+            <form id = login_form>
+                <div class="imgcontainer">
+                    <img src="images/img_avatar.jpg" alt="Avatar" class="avatar">
+                </div>
+
+                <label for="uname"><b>Username</b></label>
+                <input id="login_modal_name" type="text" value="admin" placeholder="Enter Username" name="uname" required>
+
+                <label for="psw"><b>Password</b></label>
+                <input id="login_modal_password" type="text" value="admin" placeholder="Enter Password" name="psw" onpaste="return false" oncopy="return false" oncut="return false" required>
+
+                <button type="submit"  >
+                    Login
+                </button>
+                <button id="Forgot_my_password">
+                    Forgot my password
+                </button>
+                <input type="reset" value="Reset Form"> 
+
+                <div style="background-color:#f1f1f1">
+                    <button type="button" data-dismiss="modal" class="cancelbtn"  >Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="registerModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form ref='uploadForm'
+                  id='user_add_Form'
+                  method='post'
+                  encType="multipart/form-data">
+                <div class="imgcontainer">
+                    <img src="images/img_avatar.jpg" alt="Avatar" class="avatar">
+                </div>
+
+                <label for="uname"><b>Username</b></label>
+                <input id="register_name" type="text" placeholder="Enter Username" name="uname" required>
+
+                <label for="psw"><b>Password</b></label>
+                <input id="register_password" type="password" placeholder="Enter Password" name="psw" required>
+
+                <select id="registerSelect" name="registerSelect">
+                    <option value="customer" selected>customer</option>
+                    <!-- <option value="admin">admin</option>
+                    <option value="worker">worker</option>
+                    <option value="supplier">supplier</option> -->
+                </select>
+
+                <label for="register_files" class="btn">Select Image</label>
+                <!-- <input id="files"  accept="image/*" style="visibility:hidden;" type="file" name="upfile"/> -->
+                <input id="register_files"  accept="image/*" style="visibility:hidden;" type="file" name="upfile"/>
+
+                <label for="image_url"><b>Or you can paste here link to the image</b></label>
+                <input id="register_image_url" type="text" placeholder="Paste here the link" name="image_url">
+
+                <div style="background-color:#f1f1f1">
+                    <button type="button" class="cancelbtn"  data-dismiss="modal"  >Cancel</button>
+                    <input  type="submit" class="addbtn" value="Register" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addUserModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form ref='uploadForm'
+                  id='user_add_Form'
+                  method='post'
+                  encType="multipart/form-data">
+                <div class="imgcontainer">
+                    <img src="images/img_avatar.jpg" alt="Avatar" class="avatar">
+                </div>
+
+                <label for="uname"><b>Username</b></label>
+                <input id="addUser_name" type="text" placeholder="Enter Username" name="uname" required>
+
+                <label for="psw"><b>Password</b></label>
+                <input id="addUser_password" type="password" placeholder="Enter Password" name="psw" required>
+
+                <select id="addUserSelect" name="addUserSelect">
+                    <option value="customer" selected>customer</option>
+                    <option value="admin">admin</option>
+                    <option value="worker">worker</option>
+                    <option value="supplier">supplier</option>
+                </select>
+
+                <label for="files" class="btn">Select Image</label>
+                <!-- <input id="files"  accept="image/*" style="visibility:hidden;" type="file" name="upfile"/> -->
+                <input id="files"  accept="image/*" style="visibility:hidden;" type="file" name="upfile"/>
+
+                <label for="image_url"><b>Or you can paste here link to the image</b></label>
+                <input id="image_url" type="text" placeholder="Paste here the link" name="image_url">
+
+                <div style="background-color:#f1f1f1">
+                    <button type="button" class="cancelbtn"  data-dismiss="modal"  >Cancel</button>
+                    <input  type="submit" class="addbtn" value="Add" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateUserModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id='user_update_form' method='post'>
+
+                <label for="uname"><b>Username</b></label>
+                <input id="updateUser_name"     type="text"     name="uname" required>
+
+                <label for="psw"><b>Password</b></label>
+                <input id="updateUser_password" type="text"     name="psw" required>
+
+                <input  type="radio" name="user_update_status" id="update_active"   value="active"> Active
+                <input type="radio" name="user_update_status" id="update_not_active"   value="not active"> Not active 
+                <br>
+                
+                <select id="updateUserSelect" name="updateUserSelect">
+                    <option value="customer" selected>customer</option>
+                    <option value="admin">admin</option>
+                    <option value="worker">worker</option>
+                    <option value="supplier">supplier</option>
+                </select>
+
+                
+               
+                <div style="background-color:#f1f1f1">
+                    <button type="button" class="cancelbtn"  data-dismiss="modal"  >Cancel</button>
+                    <input  id="user_update_submit" type="submit" class="updatebtn"        value="Update" />
+                </div>
+                
+                <input style="visibility:hidden;" name="user_update_id" id="user_update_id"/>
+                <input style="visibility:hidden;" name="user_update_status_container"  id="user_update_status_container" />
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editYourProfileButtonModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id='user_edit_form' method='post'>
+
+                <label for="uname"><b>Username</b></label>
+                <input id="editUser_name"     type="text"     name="uname" required>
+
+                <input  type="radio" name="user_edit_status" id="edit_active"   value="active"> Active
+                <input type="radio" name="user_edit_status" id="edit_not_active"   value="not active"> Not active 
+                <br>
+                
+                <div style="background-color:#f1f1f1">
+                    <button type="button" class="cancelbtn"  data-dismiss="modal"  >Cancel</button>
+                    <input  id="user_edit_submit" type="submit" class="updatebtn"        value="Save" />
+                </div>
+                
+                <input style="visibility:hidden;" name="user_edit_id" id="user_edit_id"/>
+                <input style="visibility:hidden;" name="user_edit_status_container"  id="user_edit_status_container" />
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addFlowerModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form ref='uploadForm'
+                id='uploadForm'
+                action='/flowers/upload_flower'
+                method='post'
+                encType="multipart/form-data">
+
+                <label for="add_flower_name_id"><b>Name</b></label>
+                <input id="add_flower_name_id" type="text" placeholder="Enter Flower Name Here" name="add_flower_name" required>
+
+                <label for="add_flower_description_id"><b>Description</b></label>
+                <input id="add_flower_description_id" type="text" placeholder="Enter Flower Description Here" name="add_flower_description_name" >
+
+                <label for="add_flower_color_id"><b>Color</b></label>
+                <input id="add_flower_color_id" type="text" placeholder="Enter Flower Color Here" name="add_flower_color_name" >
+
+                <label for="add_flower_price_id"><b>Price</b></label>
+                <input id="add_flower_price_id" type="text" placeholder="Enter Price Here" name="add_flower_price_name" >
+
+                
+                <label for="add_flower_files_id" class="btn">Select Image</label>
+                <input id="add_flower_files_id"  accept="image/*" style="visibility:hidden;" type="file" name="add_flower_files_name"/>
+                <input style="visibility:hidden;" name="add_flower_managerName_name" id="add_flower_managerName_id" value="" />
+
+                <label for="image_url"><b>Or you can paste here link to the image</b></label>
+                <input id="image_url" type="text" placeholder="Paste here the link" name="image_url">
+
+                <div style="background-color:#f1f1f1">
+                    <button type="button" class="cancelbtn"  data-dismiss="modal"  >Cancel</button>
+                    <input  type="submit" class="addbtn"        value="Add" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateFlowerModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form ref='uploadForm'
+                id='uploadForm'
+                action='/flowers/update_flower'
+                method='post'
+                encType="multipart/form-data">
+
+                <label for="update_flower_name_id"><b>Name</b></label>
+                <input id="update_flower_name_id" type="text" placeholder="Enter Flower Name Here" name="update_flower_name" required>
+
+                <label for="update_flower_description_id"><b>Description</b></label>
+                <input id="update_flower_description_id" type="text" placeholder="Enter Flower Description Here" name="update_flower_description_name" >
+
+                <label for="update_flower_color_id"><b>Color</b></label>
+                <input id="update_flower_color_id" type="text" placeholder="Enter Flower Color Here" name="update_flower_color_name" >
+
+                <label for="update_flower_price_id"><b>Price</b></label>
+                <input id="update_flower_price_id" type="text" placeholder="Enter Price Here" name="update_flower_price_name" >
+
+                <!-- <input  type="radio" name="flower_update_status" id="flower_update_active"   value="active"> Active
+                <input type="radio" name="flower_update_status" id="flower_update_not_active"   value="not active"> Not active 
+                <br> -->
+                <input style="visibility:hidden;" name="flower_update_id_name" id="flower_update_id_id"/>
+
+                <div style="background-color:#f1f1f1">
+                    <button type="button" class="cancelbtn"  data-dismiss="modal"  >Cancel</button>
+                    <input  type="submit" class="updatebtn"        value="Update" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addBranchModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form ref='uploadForm'
+                id='uploadForm'
+                action='/branches/upload_branch'
+                method='post'
+                encType="multipart/form-data">
+
+                <label for="add_branch_name_id"><b>Name</b></label>
+                <input id="add_branch_name_id" type="text" placeholder="Enter Branch Name Here" name="add_branch_name" required>
+
+                <label for="add_branch_addres_id"><b>Addres</b></label>
+                <input id="add_branch_addres_id" type="text" placeholder="Enter Branch Addres Here" name="add_branch_addres_name" >
+
+                
+                <label for="add_branch_files_id" class="btn">Select Image</label>
+                <input id="add_branch_files_id"  accept="image/*" style="visibility:hidden;" type="file" name="add_branch_files_name"/>
+                <input style="visibility:hidden;" name="add_branch_managerName_name" id="add_branch_managerName_id" value="" />
+
+                <label for="image_url"><b>Or you can paste here link to the image</b></label>
+                <input id="image_url" type="text" placeholder="Paste here the link" name="image_url">
+
+                <div style="background-color:#f1f1f1">
+                    <button type="button" class="cancelbtn"  data-dismiss="modal"  >Cancel</button>
+                    <input  type="submit" class="addbtn"        value="Add" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateBranchModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form ref='uploadForm'
+                id='uploadForm'
+                action='/branches/update_branch'
+                method='post'
+                encType="multipart/form-data">
+                
+                <label for="update_branch_name_id"><b>Name</b></label>
+                <input style="visibility:hidden;" name="update_branch_managerName_name" id="update_branch_managerName_id" value="" />
+                <input id="update_branch_name_id" type="text" placeholder="Enter Branch Name Here" name="update_branch_name" required>
+
+                <label for="update_branch_addres_id"><b>Addres</b></label>
+                <input style="visibility:hidden;" name="branch_update_id_name" id="branch_update_id_id"/>
+                <input id="update_branch_addres_id" type="text" placeholder="Enter Branch Addres Here" name="update_branch_addres_name" >
+
+                
+                
+                <input  type="radio" name="branch_update_status" id="branch_update_active"   value="active"> Active
+                <input type="radio" name="branch_update_status" id="branch_update_not_active"   value="not active"> Not active 
+                <input style="visibility:hidden;" name="branch_update_status_container"  id="branch_update_status_container" />
+                
+                <div style="background-color:#f1f1f1">
+                    <button type="button" class="cancelbtn"  data-dismiss="modal"  >Cancel</button>
+                    <input  id="branch_update_submit" type="submit" class="addbtn" value="Update" />
+                </div>
+                
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+    
+<div class="modal fade" id="underConstruction" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            under construction, please be pacient for the next version
+        </div>
+    </div>
+</div>
+    
+
+</body>
+<script type="text/javascript">
+    $(document).ready(function()
+    {
+        jquery_intials()
+
+        //for redirect to the current page after refresh
+        switch(location.hash)
+        {
+            case '#home':     home();
+                break;
+            case '#flowers':  flowers_catalog();
+                break;
+            case '#users':    read_list();
+                break;
+            case '#branches': branches_list();
+                break;
+            case '#about':    about();
+                break;
+            case '#contact':  contact();
+                break;
+            case '#underConstruction':  underConstruction();
+                break;
+            default:          location.hash = '#home';
+                home();
+        }
+    });
+    
+</script>
+
+</html>
