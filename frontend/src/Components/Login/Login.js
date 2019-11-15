@@ -92,7 +92,7 @@ class ConnectedLogin extends Component {
             color="primary"
             onClick={() => {
               // Authenticate the user using entered credentials.
-              Auth.resetPassword(this.state.userName, message => {
+              Auth.forgotPassword(this.state.userName, message => {
                 alert(message)
               });
             }}

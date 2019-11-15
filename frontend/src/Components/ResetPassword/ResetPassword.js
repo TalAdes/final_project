@@ -5,8 +5,8 @@ import Auth from "../../Auth";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { setLoggedInUser } from "../../Redux/Actions";
-
-import "./join_us.css";
+import queryString from "query-string";
+import "./ResetPassword.css";
 
 class ResetPassword extends Component {
   state = {
@@ -23,11 +23,11 @@ class ResetPassword extends Component {
     }
 
     return (
-      <div className="login-container">
+      <div className="reset-container">
         <div
           style={{
             height: 200,
-            width: 200,
+            width: 220,
             display: "flex",
             flexDirection: "column"
           }}
@@ -50,7 +50,7 @@ class ResetPassword extends Component {
             }}
           />
           <TextField
-            value={this.state.pass_1}
+            value={this.state.pass_2}
             type="password"
             placeholder="Please repeat your password"
             onChange={e => {
@@ -63,23 +63,35 @@ class ResetPassword extends Component {
             color="primary"
             onClick={() => {
               // Authenticate the user using entered credentials.
-              Auth.register(req.query.token, this.state.pass_1, this.state.pass_2, user => {
-                // registeration failed.
-                if (!user) {
-                  this.setState({ wrongCred: true });
+              if (this.state.pass_1 != this.state.pass_2) {
+                this.setState({ wrongCred: true });
                   return;
-                }
+              } else {
+                
+                const parsed = queryString.parseUrl(window.location.href);
+                console.log('parsed');
+      
+                Auth.resetPassword(parsed.query.token, this.state.pass_1, isReseted => {
+                  //there is no reason to send both passwords because in this stage the pass' should be equal
+                  //maybe the token is expired
+                  if (isReseted) {
+                    alert("your password was changed succesfuly")
+                    this.props.history.push("/search");
+                  }
+                  else{
+                    alert("your reset link was expired please generate a new one")
+                  }
+                });
+              }
 
-                // If we get here, authentication was success.
-                this.props.dispatch(setLoggedInUser({ name: user.name }));
-                this.setState(() => ({
-                  redirectToReferrer: true
-                }));
-              });
             }}
+
           >
             change password
           </Button>
+          {this.state.wrongCred && (
+            <div style={{ color: "red" }}>Wrong username and/or password</div>
+          )}
         </div>
       </div>
     );

@@ -4,7 +4,7 @@ import axios from 'axios'
 // Mock of an authentication service
 const Auth = {
 
-  authenticate(name, pass, cb) {
+	authenticate(name, pass, cb) {
     
     var data = {name,'password' : pass}
     var key = new rsa()
@@ -28,19 +28,16 @@ const Auth = {
                 }).catch(err =>  
                     console.log("get_PK_and_random error: "+err))
                 .then((data) => 
-                  fetch('/login',{
+					fetch('/login',{
                     method: 'POST',
                     body: JSON.stringify(data),
                     headers: {
                       'Content-Type': 'application/json'
                     }
-                  })
+					})
                 )
-                // .then(res => res.text())
-                // .then(res => console.log(res))
                 .then(res => res.json())
-                .then((res) => 
-                  cb(res))
+                .then((res) => cb(res))
                 .catch(err =>  
                   {console.log(err+';)')
                   cb({
@@ -54,34 +51,70 @@ const Auth = {
     //     }),
     //   100
     // );
-  },
+	},
 
-  resetPassword(name, cb) {
+	forgotPassword(name, cb) {
+
+	return axios.post('forgotPassword',{
+		name
+	})
+		.then(res => {
+		cb(res.data)
+		})
+		.catch(err =>  
+		{console.log(err)
+		cb('Something went wrong, please try again')})
+	},
+
+	resetPassword(token, pass, cb) {
     
-    return axios.post('forgotPassword',{
-      name
-    })
-      .then(res => {
-        cb(res.data)
-      })
-      .catch(err =>  
-        {console.log(err)
-        cb('Something went wrong, please try again')})
-  },
+    var data = {}
+    data['password'] = pass
+    data['token'] = token
+        
+    //has to encrypt before sending to server
+    return axios.get('./get_PK_and_random')
+            .then(response => {
+				var	key = new rsa()
+                var pk = response.data.pk;
+                var rn = response.data.rn;
+                //encrypting the pass before sending it to the server
+                key.importKey(pk, ['public']);
+				//data['password']+rn inorder to prevenr reply attack
+                data['password'] = key.encrypt(data['password']+rn,'base64')
+                return data
+			})
+			.catch(err =>{  
+				console.log("get_PK_and_random error: "+err)
+			})
+			.then(data => {
+				return axios.post('users/reset_user_password', data)
+					.then(resp => {
+						console.log(resp);
+						if (resp.data=="הצליח לשנות לבחור את הסיסמא") {
+							return true
+						}
+						else alert(resp.data=="your reset link was expired")
+						{
+							return false
+						}
+					})
+			})
+	},
 
-  signout(cb) {
+	signout(cb) {
 
 
     return axios.get('logOut')
-      .then(res => {
+		.then(res => {
         cb(res.data)
-      })
-      .catch(err =>  
+		})
+		.catch(err =>  
         {console.log(err)
         cb('Something went wrong, please try again')})
     // this._isAuthenticated = false;
     // setTimeout(cb, 100);
-  }
+	}
 };
 
 export default Auth;

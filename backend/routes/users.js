@@ -260,6 +260,7 @@ const BranchModel = require('../models/branches');
 
 	router.post('/reset_user_password', async function (req, res) 
 	{
+		console.log('i am here');
 		var data = req.body
 		
 		var decrypted = key.decrypt(data.password, 'utf8')

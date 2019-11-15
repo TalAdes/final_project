@@ -9,6 +9,7 @@ import CartDialog from "./Components/CartDialog/CartDialog";
 import Details from "./Components/Details/Details";
 import Order from "./Components/Order/Order";
 import Login from "./Components/Login/Login";
+import ResetPassword from "./Components/ResetPassword/ResetPassword";
 import Signup from "./Components/Signup/join_us";
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
 import Footer from "./Components/Footer/Footer";
@@ -29,6 +30,7 @@ class App extends Component {
               <Route path="/details/:id" component={Details} />
               <Route path="/about" render={() => <div>About us</div>} />
               <Route path="/login" component={Login} />
+              <Route path="/reset_password" component={ResetPassword} />
               <Route path="/join_us" component={Signup} />
               <ProtectedRoute path="/order" component={Order} />
               <Route
