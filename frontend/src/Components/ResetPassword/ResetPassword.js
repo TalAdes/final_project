@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import Auth from "../../Auth";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import { setLoggedInUser } from "../../Redux/Actions";
 import queryString from "query-string";
 import "./ResetPassword.css";
 
@@ -63,7 +62,7 @@ class ResetPassword extends Component {
             color="primary"
             onClick={() => {
               // Authenticate the user using entered credentials.
-              if (this.state.pass_1 != this.state.pass_2) {
+              if (this.state.pass_1 !== this.state.pass_2) {
                 this.setState({ wrongCred: true });
                   return;
               } else {
@@ -76,11 +75,11 @@ class ResetPassword extends Component {
                   //maybe the token is expired
                   if (isReseted) {
                     alert("your password was changed succesfuly")
-                    this.props.history.push("/search");
                   }
                   else{
                     alert("your reset link was expired please generate a new one")
                   }
+                  this.props.history.push("/login");
                 });
               }
 

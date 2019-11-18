@@ -52,10 +52,8 @@ class ConnectedHeader extends Component {
 
   render() {
     let { anchorEl } = this.state;
-    
-    // console.log('this.props.location.state');
-    // console.log(this.props.location.state);
-    
+    // force logout
+    // this.props.dispatch(setLoggedInUser(null))
     return (
       <AppBar
         position="static"

@@ -5,6 +5,13 @@ const rsa = require('Node-RSA')
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const passport = require('passport');
+var cloudinary = require('cloudinary').v2;
+
+cloudinary.config({ 
+	cloud_name: process.env.CLOUD_NAME, 
+	api_key: process.env.API_KEY, 
+	api_secret: process.env.API_SECRET
+})
 
 
 /* setting DB path  */
@@ -36,8 +43,6 @@ const pk = key.exportKey(['public'])
 		// res.send(rn);
 		res.send({ "pk": pk, "rn": rn });
 	});
-	
-	
 	
 	router.get('/get_minimal_user_data', function (req, res) {
 		console.log("router.get('/get_minimal_user_data', function (req, res) {")
@@ -181,14 +186,14 @@ const pk = key.exportKey(['public'])
 						subject: 'Link To Reset Password',
 						text:
 							`You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
-							Please click on the following link, or paste this into your browser to complete the process within one hour of receiving it:\n\n
+							Please click on the following link, or paste this into your browser to complete the process within ten minutes of receiving it:\n\n
 							http://localhost:3000/reset_password?token=${token}\n\n
 							If you did not request this, please ignore this email and your password will remain unchanged.\n`,
 					};
 
 
 
-					UserModel.findOneAndUpdate({'name':_name},{'resetPasswordToken': token, 'resetPasswordExpires': Date.now() + 360000})
+					UserModel.findOneAndUpdate({'name':_name},{'resetPasswordToken': token, 'resetPasswordExpires': Date.now() + 600000})
 					.then(() =>{
 						console.log('i am after find and update');
 						transporter.sendMail(mailOptions, (err, response) => {
@@ -212,6 +217,15 @@ const pk = key.exportKey(['public'])
 		})
 	})
 
+	router.post('/upload_image', function (req, res) {
+		console.log("welcome to upload image with cloudinary");
+		const path = req.files[0]
+		console.log('file');
+		console.log(path);
+		console.log('check');
+		cloudinary.uploader.upload(path)
+		.then(image => res.json([image]))
+	});
 }
 
 
@@ -312,7 +326,7 @@ router.get('/image_test', function (req, res) {
 
 
 	router.get('/unothorized_read_list', function (req, res) {
- 
+
 		console.log("req.user:");
 		console.log(req.user);
 		UserModel.find().sort({ id: 1 }).then(function (arry) {

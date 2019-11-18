@@ -12,102 +12,234 @@ const UserModel = require('../models/users');
 const BranchModel = require('../models/branches');
 
 //users CRUD
-	router.post('/create_user', function (req, res) {
-		var _root = __dirname.substring(0, __dirname.lastIndexOf("\\") + 1)
-		var data = req.body
-		
-		var decrypted = key.decrypt(data.password, 'utf8')
-		var pass = decrypted.substring(0, decrypted.length - 1);
-		
-		//need to delete next line because i dont want to save the pwd as plain text
-		data['pwd']=pass
-		
-		//it would be more efficiant if i was reaplacing this two mongodb methods
-		UserModel.find().then(function (resultArry){
-			return (Math.max.apply(null,resultArry.map(function(x){ return x.id}))+1).toString()
-		}).then(function(next_id){
-			UserModel.findOne({ name: data.name }).then(async function (_user) {
-				data['id']=next_id.toString()
-				if (_user) 
+router.post('/create_user', function (req, res) {
+	var data = req.body
+	//let's check if you are trynig to upper your permissions:
+	switch(data.role) {
+		case 'subscriber':
+			break;
+		case 'worker':
+			if (!req.user) {
+				res.json({
+					'error' : "you are dirty hacker you can't make any user exept of subscriber",
+					'isRegisteredSuccesfully' : false,
+					'becauseImage' : false,
+					'name':""
+				});
+				return;
+			} else if (req.user.role !== 'admin') {
+				res.json({
+					'error' : "you are dirty hacker you have no permission to add worker",
+					'isRegisteredSuccesfully' : false,
+					'becauseImage' : false,
+					'name':""
+				});
+				return;
+			}
+			break;
+		case 'admin':
+			if (!req.user) {
+				res.json({
+					'error' : "you are dirty hacker you can't make any user exept of subscriber",
+					'isRegisteredSuccesfully' : false,
+					'becauseImage' : false,
+					'name':""
+				});
+				return;
+			} else if (req.user.role !== 'SuperUser') {
+				res.json({
+					'error' : "you are dirty hacker you have no permission to add an admin",
+					'isRegisteredSuccesfully' : false,
+					'becauseImage' : false,
+					'name':""
+				});
+				return;
+			}
+			break;
+		case 'SuperUser':
+			res.json({
+				'error' : `you are dirty hacker, there is no option to add SuperUser via browser.
+				\nonly via one of mongoDB interfaces `,
+				'isRegisteredSuccesfully' : false,
+				'becauseImage' : false,
+				'name':""
+			});
+			return;
+		default:
+			res.json({
+				'error' : `you are dirty hacker, there is no such role as ${data.role}`,
+				'isRegisteredSuccesfully' : false,
+				'becauseImage' : false,
+				'name':""
+			});
+	}
+	
+	var _root = __dirname.substring(0, __dirname.lastIndexOf("\\") + 1)
+	
+	var decrypted = key.decrypt(data.password, 'utf8')
+	var pass = decrypted.substring(0, decrypted.length - 1);
+	
+	//need to delete next line because i dont want to save the pwd as plain text
+	data['pwd']=pass
+	data['username']=data['name']
+	
+	//it would be more efficiant if i was reaplacing this two mongodb methods
+	UserModel.find().then(function (resultArry){
+		return (Math.max.apply(null,resultArry.map(function(x){ return x.id}))+1).toString()
+	}).then(function(next_id){
+		UserModel.findOne({ name: data.name }).then(async function (_user) {
+			data['id']=next_id.toString()
+			if (_user) 
+			{
+				console.log("try different username");
+				res.json({
+					'error' : "try different username, this one was already taken",
+					'isRegisteredSuccesfully' : false,
+					'becauseImage' : false,
+					'name':""
+				});
+			}
+			else{//if this name is new(good)
+				if(req.files)
 				{
-					console.log("try different username");
-					res.send("try different username, this one was already taken");
+					var file = req.files.file, name = file.name
+					console.log("try to upload file");
+					uploadpath = _root + 'public/images/' + name;
+					file.mv(uploadpath).then(async function (err) {
+						if (err) {
+							console.log("File Upload Failed", name, err);
+							data['src'] = "images/err";
+							console.log('לא הצליח להעלות תמונה');
+							console.log('this should be 1')
+							let response = await _register(data,pass)
+							console.log(response);
+							console.log('this should be 4')
+							if(response == "registered"){
+								res.json({
+									'error' : "Error Occured in image uploading! but don't worry your other data won't lost",
+									'isRegisteredSuccesfully' : false,
+									'becauseImage' : true,
+									'name':data.name
+								});
+							}
+							else res.json({
+								'error' : "Error Occured! non of your data was saved",
+								'isRegisteredSuccesfully' : false,
+								'becauseImage' : false,
+								'name':''
+							});
+						}
+						else {
+							console.log("File Uploaded", name);
+							data['src'] = "images/" + name;
+							console.log('הצליח להעלות את התמונה');
+							console.log('this should be 1')
+							let response = await _register(data,pass)
+							console.log(response);
+							console.log('this should be 4')
+							if(response == "registered"){
+								res.json({
+									'error' : "The registration accomplished successfully",
+									'isRegisteredSuccesfully' : true,
+									'becauseImage' : true,
+									'name':data.name
+								});
+							}
+							//this scenario doesn't suppose to be 
+							else res.json({
+								'error' : "Error Occured! non of your data was saved",
+								'isRegisteredSuccesfully' : false,
+								'becauseImage' : false,
+								'name':''
+							});					
+						}
+					})
 				}
-				else{//if this name is new(good)
-					if(req.files)
-					{
-						var file = req.files.file, name = file.name
-						console.log("try to upload file");
-						uploadpath = _root + 'public/images/' + name;
-						file.mv(uploadpath).then(async function (err) {
-							if (err) {
-								console.log("File Upload Failed", name, err);
-								data['src'] = "images/err";
-								console.log('לא הצליח להעלות תמונה');
-								console.log('this should be 1')
-								let response = await _register(data,pass)
-								console.log(response);
-								console.log('this should be 4')
-								if(response == "registered"){
-									res.send("Error Occured in image uploading! but don't worry your other data won't lost")
-								}
-								else res.send("Error Occured! non of your data was saved") 						
-							}
-							else {
-								console.log("File Uploaded", name);
-								data['src'] = "images/" + name;
-								console.log('הצליח להעלות את התמונה');
-								console.log('this should be 1')
-								let response = await _register(data,pass)
-								console.log(response);
-								console.log('this should be 4')
-								if(response == "registered"){
-									res.send("The registration accomplished successfully")
-								}
-								else res.send("Error Occured! non of your data was saved") 						
-							}
-						})
-					}
-					else 
-					{
-						if(data.image_url!=""){
-							dest = _root + 'public/images/';
-							var _data = { url: data.image_url, dest: dest }
-							download.image(_data).then(async function({filename,l}){
+				else 
+				{
+					if(data.image_url!=""){
+						dest = _root + 'public/images/';
+						var _data = { url: data.image_url, dest: dest }
+						console.log('***********************************');
+						download.image(_data)
+							.then(async function({filename,l}){
 								data['src'] = "images/" + filename.substring(filename.lastIndexOf("\\") + 1, filename.length)
 								console.log('this should be 1')
 								let response = await _register(data,pass)
 								console.log('this should be 4')
 								console.log(response);
 								if(response == "registered"){
-									res.send("The registration accomplished successfully")
+									res.json({
+										'error' : "The registration accomplished successfully",
+										'isRegisteredSuccesfully' : true,
+										'becauseImage' : false,
+										'name':""
+									});
 								}
-								else res.send("Error Occured! non of your data was saved") 						
+								else res.json({
+										'error' : "Error Occured! non of your data was saved",
+										'isRegisteredSuccesfully' : false,
+										'becauseImage' : false,
+										'name':""
+									});					
+							})    
+							//if there is problem with the image
+							.catch(async function(err){
+								console.log(`i am in catch this is the error: ${err}`);
+								let response = await _register(data,pass)
+								
+								if (response === "registered") {
+									return res.json({
+										'error' : "your link is broken, but dont worry, i registered you but without image ",
+										'isRegisteredSuccesfully' : false,
+										'becauseImage' : true,
+										'name':""
+									})
+								} else {
+									res.json({
+										'error' : "Error Occured! non of your data was saved",
+										'isRegisteredSuccesfully' : false,
+										'becauseImage' : false,
+										'name':""
+									});	
+								}
 							})
-						}
-						else{ 	
-							console.log('this should be 1')
-							try {
+					}
+					else{ 	
+						console.log('this should be 1')
+						try {
 							let response = await _register(data,pass)
 							console.log('this should be 4')
 							console.log('response:');
 							console.log(response);
 							if(response == "registered"){
-								res.send("The registration accomplished successfully")
+								res.json({
+									'error' : "The registration accomplished successfully",
+									'isRegisteredSuccesfully' : true,
+									'becauseImage' : true,
+									'name':data.name
+								});
 							}
-							else res.send(response.message) 				
-							} catch (error) {
-								console.log("error:")
-								console.log(error)
-								res.send("וולאק חרא") 		
-							}
-										
+							else res.json({
+								'error' : response.message,
+								'isRegisteredSuccesfully' : false,
+								'becauseImage' : false,
+								'name':''
+							}); 				
+						} catch (error) {
+							res.json({
+								'error' : error,
+								'isRegisteredSuccesfully' : false,
+								'becauseImage' : true,
+								'name':''
+							}); 	
 						}
 					}
-				} 
-			})
+				}
+			} 
 		})
 	})
+})
 	
 	router.get('/read_list', function (req, res) {
 		var user = req.user
@@ -142,8 +274,6 @@ const BranchModel = require('../models/branches');
 						res.send(arry);
 			});
 	})
-
-
 
 	router.post('/update_user', async function (req, res) 
 	{
