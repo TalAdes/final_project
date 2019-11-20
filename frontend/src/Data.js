@@ -1,3 +1,6 @@
+import axios from "axios"
+
+
 // Our product database.
 const sampleProducts = [
   {
@@ -94,7 +97,7 @@ const sampleProducts = [
     description: "",
     popular: false,
     imageUrls: [
-      "https://www.adidas.co.uk/dis/dw/image/v2/aagl_prd/on/demandware.static/-/Sites-adidas-products/default/zoom/BB5480_00_plp_standard.jpg?sw=276&sh=276&sm=fit&hei=276&wid=276&strip=false",
+      "https://cdn.azrieli.com/Images/2aac54bb-747f-4d35-ae27-531992b7d139/Normal/74b8c391.jpg",
       "https://images-na.ssl-images-amazon.com/images/I/71pqv%2BgdgzL._UL1500_.jpg"
     ]
   },
@@ -106,6 +109,9 @@ const sampleProducts = [
     description: "",
     popular: false,
     imageUrls: [
+      "https://c.static-nike.com/a/images/t_PDP_1280_v1/f_auto/wokkcny4zbhvzobfwc7i/air-presto-womens-shoe-89Tqz1nG.jpg",
+      "https://c.static-nike.com/a/images/t_PDP_1280_v1/f_auto/wokkcny4zbhvzobfwc7i/air-presto-womens-shoe-89Tqz1nG.jpg",
+      "https://c.static-nike.com/a/images/t_PDP_1280_v1/f_auto/wokkcny4zbhvzobfwc7i/air-presto-womens-shoe-89Tqz1nG.jpg",
       "https://images-na.ssl-images-amazon.com/images/I/71qNNgYCHYL._SL1500_.jpg"
     ]
   },
@@ -198,4 +204,7 @@ const dataForRenderingMenu = ((categories) => {
   return menuData;
 })(categories)
 
-export { sampleProducts, categories, dataForRenderingMenu };
+const dataForRenderingMenuAxios = axios.get('/dataForRendering')
+const sampleProductsAxios =  axios.get('/sampleProductsAxios')
+
+export { sampleProducts,sampleProductsAxios, categories, dataForRenderingMenu ,dataForRenderingMenuAxios};

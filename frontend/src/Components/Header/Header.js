@@ -11,8 +11,8 @@ import { connect } from "react-redux";
 import {
   showCartDlg,
   toggleMenu,
-  toggleUserMenu,
   setLoggedInUser,
+  setLoggedInUserRole,
   setCheckedOutItems
 } from "../../Redux/Actions";
 import logo from "../../Images/logo2.png";
@@ -27,11 +27,13 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import { Tooltip } from "@material-ui/core";
 import Api from "../../Api";
+import axios from 'axios'
 
 const mapStateToProps = state => {
   return {
     numberOfItemsInCart: state.cartItems.length,
-    loggedInUser: state.loggedInUser
+    loggedInUser: state.loggedInUser,
+    loggedInUserRole: state.loggedInUserRole
   };
 };
 
@@ -50,6 +52,17 @@ class ConnectedHeader extends Component {
     categoryFilter: categories[0].name
   };
 
+
+  componentDidMount() {
+    axios.get('/is_loged') 
+        .then(isLoged =>{ 
+          isLoged = isLoged.data
+          if(!isLoged){
+            this.props.dispatch(setLoggedInUser(null))
+            this.props.dispatch(setLoggedInUserRole(null))
+          }
+        })
+  }
   render() {
     let { anchorEl } = this.state;
     // force logout
@@ -186,22 +199,33 @@ class ConnectedHeader extends Component {
                 </Badge>
               </IconButton>
             </Tooltip>
-            <IconButton
-
-              onClick={() => {
-                this.props.dispatch(toggleUserMenu());
-              }}
-            >
-              {/* menuIcon is a registered word for a specific icon, i can use <img> in order to choose other img */}
-              <MenuIcon size="medium" />
-            </IconButton>
+            
             <Menu
+            // this are menu simple definitions, don't need to break the head
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={() => {
                 this.setState({ anchorEl: null });
               }}
             >
+              {/* {(this.props.loggedInUserRole === 'worker' || this.props.loggedInUserRole === 'admin') ? */}
+              {(this.props.loggedInUserRole === 'admin') ?
+              (<MenuItem
+                onClick={() => {
+                  this.setState({ anchorEl: null });
+                  this.props.history.push("/order");
+                }}
+              >
+                Managment
+              </MenuItem>):(null)}
+              <MenuItem
+                onClick={() => {
+                  this.setState({ anchorEl: null });
+                  this.props.history.push("/order");
+                }}
+              >
+                My area
+              </MenuItem>
               <MenuItem
                 onClick={() => {
                   this.setState({ anchorEl: null });

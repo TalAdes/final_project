@@ -7,7 +7,9 @@ const initialState = {
   showMenu: true,
   showUserMenu: false,
   checkedOutItems: [],
-  loggedInUser: null
+  loggedInUser: null,
+  loggedInUserRole: null,
+  menuStatus:CONSTANTS.store // store/my area/managment
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -43,6 +45,10 @@ const rootReducer = (state = initialState, action) => {
       return { ...state, showUserMenu: !state.showUserMenu };
     case CONSTANTS.SET_LOGGED_IN_USER:
       return { ...state, loggedInUser: action.payload };
+    case CONSTANTS.SET_LOGGED_IN_USER_ROLE:
+      return { ...state, loggedInUserRole: action.payload };
+    case CONSTANTS.SET_MENU_STATUS:
+      return { ...state, menuStatus: action.payload };
     case CONSTANTS.SET_CHECKEDOUT_ITEMS:
       return { ...state, checkedOutItems: action.payload };
     case CONSTANTS.UPDATE_CART_ITEM_QUANTITY: {

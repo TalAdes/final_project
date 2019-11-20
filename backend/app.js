@@ -24,7 +24,8 @@ mongoose.connect('mongodb://localhost/mongoose_try', {useNewUrlParser: true});
 //maybe i can delete this line
 mongoose.set('useFindAndModify', false);
 
-
+  
+  
 cloudinary.config({ 
   cloud_name: process.env.CLOUD_NAME, 
   api_key: process.env.API_KEY, 
@@ -53,7 +54,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     // cookie: {maxAge: 1000*60, httpOnly: true} ,
-    cookie: {maxAge: 99999999999*30*60*1000, httpOnly: false}, //half an hour
+    cookie: {maxAge: parseInt(process.env.PASSPORT_MAX_AGE), httpOnly: false}, //half an hour
     rolling : true
     // cookie: {maxAge: 1000*60*15, httpOnly: true} 
     //milisoconds*seconds*minutes

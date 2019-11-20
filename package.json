@@ -6,8 +6,8 @@
     "_start": "node --inspect ./backend/bin/www",
     "server": "nodemon --inspect-brk ./backend/bin/www",
     "client": "npm start --prefix frontend",
-    "full_stack": "concurrently \"npm run _start\" \"npm run client\"",
-    "_full_stack": "concurrently \"npm run server\" \"npm run client\""
+    "_full_stack": "concurrently \"npm run _start\" \"npm run client\"",
+    "full_stack": "concurrently \"npm run server\" \"npm run client\""
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.11.2",

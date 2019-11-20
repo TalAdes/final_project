@@ -14,7 +14,8 @@ const mapStateToProps = state => {
   return {
     showUserMenu: state.showUserMenu,
     checkedOutItems: state.checkedOutItems,
-    loggedInUser: state.loggedInUser
+    loggedInUser: state.loggedInUser,
+    loggedInUserRole: state.loggedInUserRole
   };
 };
 

@@ -94,8 +94,21 @@ class ProductList extends Component {
   }
 
   async fetchData(props = this.props) {
+      // this.setState(function(prevState, props){
+      //   return { unfinishedTasks: ps.unfinishedTasks + 1 }
+      // });
     this.setState(ps => ({ unfinishedTasks: ps.unfinishedTasks + 1 }));
 
+    var x = {
+      category: this.getParamFromQS("category", props),
+      term: this.getParamFromQS("term", props),
+      page: this.getParamFromQS("page", props),
+      itemsPerPage: this.getParamFromQS("itemsPerPage", props),
+      minPrice: this.getParamFromQS("minPrice", props),
+      maxPrice: this.getParamFromQS("maxPrice", props),
+      sortValue: this.getParamFromQS("sortValue", props),
+      usePriceFilter: this.getParamFromQS("usePriceFilter", props)
+    }
     // Make simulated request to server to get items
     let results = await Api.searchItems({
       category: this.getParamFromQS("category", props),
@@ -107,7 +120,6 @@ class ProductList extends Component {
       sortValue: this.getParamFromQS("sortValue", props),
       usePriceFilter: this.getParamFromQS("usePriceFilter", props)
     });
-
     this.setState(ps => ({
       items: results.data,
       unfinishedTasks: ps.unfinishedTasks - 1,

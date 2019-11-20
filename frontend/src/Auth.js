@@ -5,6 +5,7 @@ import axios from 'axios'
 const Auth = {
 
     register(data, formData, cb) {
+        
         fetch('/get_PK_and_random')
         .then(response => response.json())
         .then(function(response) {
@@ -22,7 +23,7 @@ const Auth = {
             data.password = key.encrypt(data.password+rn,'base64')
             
             console.log('after we encrypted pass we are filling up form_data');
-            for (var key in data){
+            for (key in data){
                 formData.append(key, data[key]);
                 console.log("data["+key+"]:")
                 console.log(data[key])
@@ -46,18 +47,7 @@ const Auth = {
                 'error' : err
             })
         })
-
-
-        // console.log('********************************************');
-        // axios({
-        //     method: 'post',
-        //     url: 'users/create_user',
-        //     data: formData,
-        //     headers: {'Content-Type': 'multipart/form-data' }
-        // })
-
     },
-    
 
 	authenticate(name, pass, cb) {
     
@@ -111,7 +101,7 @@ const Auth = {
 
 	forgotPassword(name, cb) {
 
-	return axios.post('forgotPassword',{
+	return axios.post('/forgotPassword',{
 		name
 	})
 		.then(res => {
@@ -128,8 +118,10 @@ const Auth = {
     data['password'] = pass
     data['token'] = token
         
+    console.log('if there is problem need to change axios to');
+    console.log(`'return axios.get('/get_PK_and_random')'`);
     //has to encrypt before sending to server
-    return axios.get('./get_PK_and_random')
+    return axios.get('/get_PK_and_random')
             .then(response => {
 				var	key = new rsa()
                 var pk = response.data.pk;
@@ -160,8 +152,7 @@ const Auth = {
 
 	signout(cb) {
 
-
-    return axios.get('logOut')
+    return axios.get('/logOut')
 		.then(res => {
         cb(res.data)
 		})

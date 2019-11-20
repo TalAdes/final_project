@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 import queryString from "query-string";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { dataForRenderingMenu } from "../../Data";
+import { dataForRenderingMenuAxios } from "../../Data";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import { loadCSS } from "fg-loadcss/src/loadCSS";
@@ -14,7 +14,9 @@ const mapStateToProps = state => {
   return {
     showMenu: state.showMenu,
     checkedOutItems: state.checkedOutItems,
-    loggedInUser: state.loggedInUser
+    loggedInUser: state.loggedInUser,
+    menuStatus: state.menuStatus,
+    loggedInUserRole: state.loggedInUserRole
   };
 };
 
@@ -22,21 +24,27 @@ const mapStateToProps = state => {
 class ConnectedMenu extends Component {
   constructor(props) {
     super(props);
-    
     this.state = {
       // Keep track of expanded title items in menu
       // reducer: arry.reduce(func(accu,current),current)
-      expandedItems: dataForRenderingMenu.reduce((accum, current) => {
-        if (current.type === "title") {
-          accum[current.id] = true;
-        }
-        return accum;
-      }, {}),
-      menuItems:dataForRenderingMenu
+      expandedItems: [],
+      menuItems:[]
     };
   }
 
   componentDidMount() {
+    var x = dataForRenderingMenuAxios;
+    x.then(arry =>
+      {
+      arry = arry.data  
+      this.setState({'menuItems' : arry, 'expandedItems' : arry.reduce((accum, current) => {
+        if (current.type === "title") {
+          accum[current.id] = true;
+        }
+        return accum;
+        }, {})})
+      })
+    
     loadCSS("https://use.fontawesome.com/releases/v5.1.0/css/all.css");
   }
 

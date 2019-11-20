@@ -32,3 +32,11 @@ export const setLoggedInUser = user => ({
   type: CONSTANTS.SET_LOGGED_IN_USER,
   payload: user
 });
+export const setLoggedInUserRole = user => ({
+  type: CONSTANTS.SET_LOGGED_IN_USER_ROLE,
+  payload: user
+});
+export const setMenuStatus = status => ({
+  type: CONSTANTS.SET_MENU_STATUS,
+  payload: status
+});

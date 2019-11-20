@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import Auth from "../../Auth";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import { setLoggedInUser } from "../../Redux/Actions";
 import isEmail from 'validator/lib/isEmail';
 import AddAPhoto from "../../Images/add_photo_alternate-24px.svg";
 import DeleteAPhoto from "../../Images/delete_forever-24px.svg";
@@ -147,12 +146,12 @@ class ConnectedJoin_us extends Component {
             color="primary"
             onClick={() => {
               // check if pws or name are just spaces
-              // if (this.state.invalidEmail
-              //   || !this.state.userName.replace(/\s/g, '').length 
-              //   || !this.state.pass.replace(/\s/g, '').length ) {
-              //   alert('your name and/or pass only contains whitespace (ie. spaces, tabs or line breaks)');
-              //   return;
-              // }
+              if (this.state.invalidEmail
+                || !this.state.userName.replace(/\s/g, '').length 
+                || !this.state.pass.replace(/\s/g, '').length ) {
+                alert('your name and/or pass only contains whitespace (ie. spaces, tabs or line breaks)');
+                return;
+              }
 
               // Authenticate the user using entered credentials.
               
@@ -179,14 +178,18 @@ class ConnectedJoin_us extends Component {
                 if (!user.isRegisteredSuccesfully) {
                   if (user.becauseImage) {
                     //good but without photo
-                    alert(user.error)
+                      alert(user.error)
+                      this.props.history.push("/login");
                 } else {
                     alert(user.error)
                     this.setState({ wrongCred: true });
                     return;
                   }
                 }
-                else alert(user.error)
+                else {
+                  alert(user.error)
+                  this.props.history.push("/login");
+                }
               });
             }}
           >

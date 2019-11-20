@@ -1,4 +1,5 @@
 import { sampleProducts } from "./Data";
+import axios from "axios";
 
 // Methods of this class are used to simulate calls to server.
 class Api {
@@ -80,19 +81,9 @@ class Api {
     });
   }
 
-  getDataFromDB() {
-    var url = 'unothorized_read_list'
-      return fetch(url)
-        .then(x=>x.json())
-  }
-  login_test() {
-    var url = 'http://localhost:8080/'
-      return fetch(url)
-        .then(x=>x.text())
-  }
-
-
-
+  getUsersDataFromDB = axios.get('/unothorized_read_list')
+  updateUsersDataToDB = (user) => axios.post('/othorized_updateUsersDataToDB',{user})
+  getUsersDataUsingID = (id) => axios.post('/othorized_getUsersDataUsingID',{id})
 }
 
 export default new Api();
