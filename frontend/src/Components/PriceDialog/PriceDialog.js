@@ -40,7 +40,7 @@ class PriceDialog extends Component {
             <div style={{ display: "flex", padding: 20 }}>
               <TextField
                 value={min}
-                type="number"
+                type="text"
                 style={{ width: 70 }}
                 placeholder="Min"
                 label="Min"
@@ -59,7 +59,7 @@ class PriceDialog extends Component {
               />
               <TextField
                 value={max}
-                type="number"
+                type="text"
                 style={{ width: 70, marginLeft: 20 }}
                 placeholder="Max"
                 label="Max"

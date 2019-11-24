@@ -3,7 +3,6 @@ const express = require('express');
 const favicon = require('serve-favicon')
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const cloudinary = require('cloudinary')
 const logger = require('morgan');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -23,14 +22,6 @@ const app = express();
 mongoose.connect('mongodb://localhost/mongoose_try', {useNewUrlParser: true});
 //maybe i can delete this line
 mongoose.set('useFindAndModify', false);
-
-  
-  
-cloudinary.config({ 
-  cloud_name: process.env.CLOUD_NAME, 
-  api_key: process.env.API_KEY, 
-  api_secret: process.env.API_SECRET
-})
 
 
 

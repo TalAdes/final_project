@@ -267,7 +267,7 @@ const BranchModel = require('../models/branches');
 		}
 	});
 
-	router.get('/unothorized_read_list', function (req, res) {
+	router.get('/unauthorized_read_list', function (req, res) {
 			UserModel.find().sort({ id: 1 }).then(function (arry) {
 						arry.sort((a,b) => (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0))
 						console.log('arry sent');

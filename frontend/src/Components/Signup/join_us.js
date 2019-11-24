@@ -198,7 +198,7 @@ class ConnectedJoin_us extends Component {
           {this.state.wrongCred && (
             <div style={{ color: "red" }}>Wrong username and/or password</div>
           )}
-          <input type='file' style={{ visibility : "hidden" }} id='single' onChange={this.my_upload}/> 
+          <input type='file' style={{ visibility : "hidden" }} accept="image/*" id='single' onChange={this.my_upload}/> 
         </div>
       </div>
     );

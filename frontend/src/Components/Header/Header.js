@@ -17,7 +17,6 @@ import {
 } from "../../Redux/Actions";
 import logo from "../../Images/logo2.png";
 import Auth from "../../Auth";
-import { categories } from "../../Data";
 import Person from "@material-ui/icons/PersonOutline";
 import Avatar from "@material-ui/core/Avatar";
 import Menu from "@material-ui/core/Menu";
@@ -37,19 +36,12 @@ const mapStateToProps = state => {
   };
 };
 
-const categoryOptions = categories.map(x => {
-  return (
-    <MenuItem key={x.name} value={x.name}>
-      {x.name}
-    </MenuItem>
-  );
-});
-
 class ConnectedHeader extends Component {
   state = {
     searchTerm: "",
     anchorEl: null,
-    categoryFilter: categories[0].name
+    categoryFilter: null,
+    categoryOptions : null
   };
 
 
@@ -62,6 +54,18 @@ class ConnectedHeader extends Component {
             this.props.dispatch(setLoggedInUserRole(null))
           }
         })
+    Api.filterData()
+      .then(res => res.data)
+        .then(res => {
+          var categoryOptions = res.map(x => {
+            return (
+              <MenuItem key={x.name} value={x.name}>
+                {x.name}
+              </MenuItem>
+            );
+      })
+          this.setState({categoryOptions,categoryFilter:res[0].name})}
+      )
   }
   render() {
     let { anchorEl } = this.state;
@@ -111,7 +115,7 @@ class ConnectedHeader extends Component {
                 this.setState({ categoryFilter: e.target.value });
               }}
             >
-              {categoryOptions}
+              {this.state.categoryOptions}
             </Select>
 
             <Button
@@ -139,7 +143,7 @@ class ConnectedHeader extends Component {
               color="primary"
               onClick={() => {
                 // Api.getDataFromDB().then(x => console.log(x))
-                Api.getDataFromDB().then(x => console.log(x))
+                Api.whoIsLoged().then(x => alert(x.data))
               }}
             >
               TEST fetch data from db
@@ -185,21 +189,25 @@ class ConnectedHeader extends Component {
                 <Person />
               </Avatar>
             )}
-            <Tooltip title="Cart">
-              <IconButton
-                aria-label="Cart"
-                style={{marginRight: 20}}
-                tooltip="sd"
-                onClick={() => {
-                  this.props.dispatch(showCartDlg(true));
-                }}
-                >
-                <Badge badgeContent={this.props.numberOfItemsInCart} color="primary">
-                  <ShoppingCartIcon />
-                </Badge>
-              </IconButton>
-            </Tooltip>
-            
+            { this.props.loggedInUser !== null ? 
+              (<Tooltip title="Cart">
+                <IconButton
+                  aria-label="Cart"
+                  style={{marginRight: 20}}
+                  tooltip="sd"
+                  onClick={() => {
+                    this.props.dispatch(showCartDlg(true));
+                  }}
+                  >
+                  <Badge badgeContent={this.props.numberOfItemsInCart} color="primary">
+                    <ShoppingCartIcon />
+                  </Badge>
+                </IconButton>
+              </Tooltip>
+              )
+              :
+              (null)
+            }
             <Menu
             // this are menu simple definitions, don't need to break the head
               anchorEl={anchorEl}
@@ -208,16 +216,28 @@ class ConnectedHeader extends Component {
                 this.setState({ anchorEl: null });
               }}
             >
+
               {/* {(this.props.loggedInUserRole === 'worker' || this.props.loggedInUserRole === 'admin') ? */}
-              {(this.props.loggedInUserRole === 'admin') ?
+              {(this.props.loggedInUserRole === 'admin'||this.props.loggedInUserRole === 'worker') ?
               (<MenuItem
                 onClick={() => {
                   this.setState({ anchorEl: null });
-                  this.props.history.push("/order");
+                  this.props.history.push("/user_CRUD");
                 }}
               >
-                Managment
-              </MenuItem>):(null)}
+                Users
+              </MenuItem>
+              ):(null)}
+              {(this.props.loggedInUserRole === 'admin'||this.props.loggedInUserRole === 'worker') ?
+              (<MenuItem
+                onClick={() => {
+                  this.setState({ anchorEl: null });
+                  this.props.history.push("/flower_CRUD");
+                }}
+              >
+                Warehouse
+              </MenuItem>
+              ):(null)}
               <MenuItem
                 onClick={() => {
                   this.setState({ anchorEl: null });
@@ -225,14 +245,6 @@ class ConnectedHeader extends Component {
                 }}
               >
                 My area
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  this.setState({ anchorEl: null });
-                  this.props.history.push("/order");
-                }}
-              >
-                Pending Order
               </MenuItem>
               <MenuItem
                 onClick={() => {

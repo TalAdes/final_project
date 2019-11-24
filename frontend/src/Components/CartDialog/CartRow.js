@@ -30,7 +30,7 @@ const CartRow = props => {
       <TableCell>{item.price}</TableCell>
       <TableCell>
         <TextField
-          type="number"
+          type="text"
           style={{ width: 40 }}
           value={item.quantity}
           onChange={e => {

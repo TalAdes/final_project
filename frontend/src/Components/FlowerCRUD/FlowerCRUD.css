@@ -1,0 +1,14 @@
+
+
+.left-part {
+    display: flex;
+    flex: 1;
+    align-items: center;
+}
+
+.right-part {
+    display: flex;
+    flex: -1;
+    align-items: center;
+}
+

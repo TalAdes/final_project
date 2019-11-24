@@ -50,7 +50,6 @@ class ResetPassword extends Component {
           />
           <TextField
             value={this.state.pass_2}
-            type="password"
             placeholder="Please repeat your password"
             onChange={e => {
               this.setState({ pass_2: e.target.value });

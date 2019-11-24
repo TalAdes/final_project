@@ -71,7 +71,7 @@ class ProductList extends Component {
 
     switch (name) {
       case "category":
-        return qs.category || "popular";
+        return qs.category || "hot";
       case "term":
         return qs.term || "";
       case "page":
@@ -99,16 +99,6 @@ class ProductList extends Component {
       // });
     this.setState(ps => ({ unfinishedTasks: ps.unfinishedTasks + 1 }));
 
-    var x = {
-      category: this.getParamFromQS("category", props),
-      term: this.getParamFromQS("term", props),
-      page: this.getParamFromQS("page", props),
-      itemsPerPage: this.getParamFromQS("itemsPerPage", props),
-      minPrice: this.getParamFromQS("minPrice", props),
-      maxPrice: this.getParamFromQS("maxPrice", props),
-      sortValue: this.getParamFromQS("sortValue", props),
-      usePriceFilter: this.getParamFromQS("usePriceFilter", props)
-    }
     // Make simulated request to server to get items
     let results = await Api.searchItems({
       category: this.getParamFromQS("category", props),
@@ -141,14 +131,14 @@ class ProductList extends Component {
 
   getPageTitle() {
     let pageTitle;
-    if (this.getParamFromQS("category") === "popular") {
-      pageTitle = "Popular products";
+    if (this.getParamFromQS("category") === "hot") {
+      pageTitle = "hot products";
     } else if (this.getParamFromQS("directCategoryClick")) {
       pageTitle = this.getParamFromQS("category");
     } else {
       pageTitle = "Search results";
     }
-    return pageTitle;
+    return 'Shopping mode - ' + pageTitle;
   }
 
   render() {

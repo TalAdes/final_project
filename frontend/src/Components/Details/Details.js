@@ -5,14 +5,21 @@ import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { addItemInCart } from "../../Redux/Actions";
 import Api from "../../Api";
-import Item from "../Item/Item";
 import { connect } from "react-redux";
 import TextField from "@material-ui/core/TextField";
-import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { withRouter } from "react-router-dom";
 
 var Remarkable = require("remarkable");
+
+const mapStateToProps = state => {
+  return {
+    loggedInUser: state.loggedInUser,
+    loggedInUserRole: state.loggedInUserRole
+  };
+};
+
 
 class ConnectedDetails extends Component {
   constructor(props) {
@@ -23,7 +30,7 @@ class ConnectedDetails extends Component {
     this.state = {
       relatedItems: [],
       quantity: "1",
-      item: null,
+      item: {quantity : 2},
       unfinishedTasks: 0
     };
   }
@@ -80,25 +87,7 @@ class ConnectedDetails extends Component {
       return null;
     }
 
-    let settings = {
-      dots: true,
-      infinite: true,
-      speed: 500,
-      focusOnSelect: false,
-      slidesToShow: 1,
-      slidesToScroll: 1
-    };
 
-    let settingsRelatedItems = {
-      dots: true,
-      infinite: true,
-      speed: 500,
-      focusOnSelect: false,
-      slidesToShow:
-        this.state.relatedItems.length < 3 ? this.state.relatedItems.length : 3,
-      slidesToScroll:
-        this.state.relatedItems.length < 3 ? this.state.relatedItems.length : 3
-    };
 
     return (
       <div className="details" style={{ padding: 10 }}>
@@ -125,24 +114,11 @@ class ConnectedDetails extends Component {
               borderRadius: "5px"
             }}
           >
-            <Slider {...settings}>
-              {this.state.item.imageUrls.map(x => {
-                // NOTE: If I pass img directly instead of wrapping it in div, this component seems to mess up its styles.
-                return (
-                  <div key={x}>
-                    <img
-                      alt="Item"
-                      style={{
-                        objectFit: "contain",
-                        height: 290,
-                        width: 290
-                      }}
-                      src={x}
-                    />
-                  </div>
-                );
-              })}
-            </Slider>
+          <img
+            alt=""
+            style={ { height: '100%', width: '100%'}}
+            src={"/" + this.state.item.src}
+          />  
           </div>
           <div
             style={{
@@ -155,38 +131,52 @@ class ConnectedDetails extends Component {
             <div style={{ fontSize: 18, marginTop: 10 }}>
               Price: {this.state.item.price} $
             </div>
-            {this.state.item.popular && (
+            {this.state.item.hot && (
               <span style={{ color: "#1a9349", marginTop: 5, fontSize: 14 }}>
-                (Popular product)
+                hot product
               </span>
             )}
 
-            <TextField
-              type="number"
-              value={this.state.quantity}
-              style={{ marginTop: 20, marginBottom: 20, width: 50 }}
-              label="Quantity"
-              onChange={e => {
-                let val = parseInt(e.target.value);
-                if (val < 1 || val > 10) return;
-                this.setState({ quantity: val.toString() });
-              }}
-            />
-            <Button
-              style={{ width: 200, marginTop: 5 }}
-              color="primary"
-              variant="contained"
-              onClick={() => {
-                this.props.dispatch(
-                  addItemInCart({
-                    ...this.state.item,
-                    quantity: parseInt(this.state.quantity)
-                  })
-                );
-              }}
-            >
-              Add to Cart <AddShoppingCartIcon style={{ marginLeft: 5 }} />
-            </Button>
+            { this.props.loggedInUser !== null ? 
+              (
+              <TextField
+                type="text"
+                value={this.state.quantity}
+                style={{ marginTop: 20, marginBottom: 20, width: 50 }}
+                label="Quantity"
+                onChange={e => {
+                  let val = parseInt(e.target.value);
+                  if (val < 1 || val > this.state.item.quantity) return this.setState({ quantity: this.state.item.quantity.toString() });
+                  this.setState({ quantity: val.toString() });
+                }}
+              />
+              )
+              :
+              (null)
+            }
+
+            { this.props.loggedInUser !== null ? 
+              (
+              <Button
+                style={{ width: 200, marginTop: 5 }}
+                color="primary"
+                variant="contained"
+                onClick={() => {
+                  this.props.dispatch(
+                    addItemInCart({
+                      ...this.state.item,
+                      quantity: parseInt(this.state.quantity)
+                    })
+                  );
+                }}
+              >
+                Add to Cart <AddShoppingCartIcon style={{ marginLeft: 5 }} />
+              </Button>
+              )
+              :
+              (null)
+            }
+            
           </div>
         </div>
 
@@ -201,69 +191,16 @@ class ConnectedDetails extends Component {
           Product Description
         </div>
 
-        {this.state.item.description ? (
-          <div
-            style={{
-              color: "gray",
-              marginLeft: 5,
-              maxHeight: 200,
-              fontSize: 13,
-              overflow: "auto"
-            }}
-            dangerouslySetInnerHTML={this.getRawMarkup(
-              this.state.item.description
-            )}
-          />
-        ) : (
-          <div
-            style={{
-              color: "gray",
-              marginTop: 20,
-              marginBottom: 20,
-              marginLeft: 5,
-              maxHeight: 200,
-              fontSize: 13,
-              overflow: "auto"
-            }}
-            dangerouslySetInnerHTML={{ __html: "Not available" }}
-          />
-        )}
 
-        <div
-          style={{
-            color: "#504F5A",
-            marginTop: 10,
-            marginBottom: 20,
-            fontSize: 22
-          }}
-        >
-          Related Items
-        </div>
+        <span style={{ color: "#gray", marginTop: 5, fontSize: 13 }}>
+        {this.state.item.description}
+        </span>
 
-        {this.state.relatedItems.length === 0 ? (
-          <div
-            style={{
-              fontSize: 13,
-              color: "gray",
-              marginLeft: 10,
-              marginBottom: 10
-            }}
-          >
-            Not available
-          </div>
-        ) : (
-          <div style={{ width: 600, height: 320, paddingLeft: 40 }}>
-            <Slider {...settingsRelatedItems}>
-              {this.state.relatedItems.map(x => {
-                return <Item key={x.id} item={x} />;
-              })}
-            </Slider>
-          </div>
-        )}
+        
       </div>
     );
   }
 }
 
-let Details = connect()(ConnectedDetails);
+const Details = withRouter(connect(mapStateToProps)(ConnectedDetails));
 export default Details;

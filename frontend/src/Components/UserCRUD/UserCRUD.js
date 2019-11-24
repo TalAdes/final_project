@@ -2,16 +2,10 @@ import React, { Component } from "react";
 import "./UserCRUD.css";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import Button from "@material-ui/core/Button";
 import ItemUser from "../Item/ItemUser";
 import CircularProgress from "@material-ui/core/CircularProgress";
-// import "./ProductList.css";
-import queryString from "query-string";
 import Api from "../../Api";
-
-
-
-
-
 
 class UserCRUD extends Component {
   constructor(props) {
@@ -24,8 +18,6 @@ class UserCRUD extends Component {
       items: []
   };
 
-  this.getParamFromQS = this.getParamFromQS.bind(this);
-  this.updateURLAndRedirect = this.updateURLAndRedirect.bind(this);
   }
 
   // Convert object to query string
@@ -38,46 +30,7 @@ class UserCRUD extends Component {
   return query;
   }
 
-  // This function is used to update the query string with new values
-  // and redirect to new URL.
-  updateURLAndRedirect(newValues, restartPaging) {
-  let currentQs = queryString.parse(this.props.location.search);
-  let newQS = { ...currentQs, ...newValues };
 
-  if (restartPaging) {
-      delete newQS["page"];
-  }
-
-  this.props.history.push("/search/?" + this.objectToQueryString(newQS));
-  }
-
-  // Extract value of certain parameter from query string.
-  getParamFromQS(name, props = this.props) {
-  let qs = queryString.parse(props.location.search);
-
-  switch (name) {
-      case "category":
-      return qs.category || "popular";
-      case "term":
-      return qs.term || "";
-      case "page":
-      return qs.page || "1";
-      case "minPrice":
-      return qs.minPrice || "0";
-      case "maxPrice":
-      return qs.maxPrice || "1000";
-      case "usePriceFilter":
-      return qs.usePriceFilter === "true";
-      case "sortValue":
-      return qs.sortValue || "lh";
-      case "itemsPerPage":
-      return qs.itemsPerPage || "5";
-      case "directCategoryClick":
-      return qs.term === undefined;
-      default:
-      return undefined;
-  }
-  }
 
   fetchData() {
     // this.setState(function(prevState, props){
@@ -85,9 +38,9 @@ class UserCRUD extends Component {
     // });
     this.setState(ps => ({ unfinishedTasks: ps.unfinishedTasks + 1 }));
 
-    var x = Api.getUsersDataFromDB;
 
-    return x.then((res)=>{
+    Api.getUsersDataFromDB()
+      .then((res)=>{
       res = res.data;
       this.setState(ps => ({
             items: res,
@@ -105,23 +58,23 @@ class UserCRUD extends Component {
   this.fetchData();
   }
 
-  handleSortChange = e => {
-  this.updateURLAndRedirect({ sortValue: e.value });
-  };
 
   getPageTitle() {
-  let pageTitle;
-  if (this.getParamFromQS("category") === "popular") {
-      pageTitle = "Popular products";
-  } else if (this.getParamFromQS("directCategoryClick")) {
-      pageTitle = this.getParamFromQS("category");
-  } else {
-      pageTitle = "Search results";
+    return 'All users';
   }
-  return pageTitle;
+  
+  getItemUser(item) {
+    if(item.status === 'active') 
+      return <ItemUser key={item.id} item={item} />
+    return null
   }
   
   render() {
+    if (this.state.items === "hacker....") {
+      alert(this.state.items)
+      this.props.history.push("/login");
+      return null
+    }
     return (
       <div
         style={{
@@ -135,14 +88,22 @@ class UserCRUD extends Component {
           <div className="online-shop-title" style={{ flexGrow: 1 }}>
             {this.getPageTitle()}
           </div>
+          <Button
+              style={{ marginLeft: 20 }}
+              variant="outlined"
+              color="primary"
+              onClick={() => {
+                this.props.history.push("/AddNewUser");
+              }}
+            >
+              Add New User
+          </Button>
         </div>
         <div style={{ flex: 1 }}>
           {this.state.unfinishedTasks !== 0 ? (
             <CircularProgress className="circular" />
           ) : (
-            this.state.items.map(item => {
-              return <ItemUser key={item.id} item={item} />;
-            })
+            this.state.items.map(item => this.getItemUser(item))
           )}
         </div>
       </div>
@@ -153,7 +114,7 @@ const mapStateToProps = () => {
   return {}
 };
 
-export default UserCRUD= withRouter(connect(mapStateToProps)(UserCRUD));
+export default withRouter(connect(mapStateToProps)(UserCRUD));
 //  
 
 // export default withRouter(connect(mapStateToProps)(ConnectedHeader));

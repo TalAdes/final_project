@@ -7,8 +7,12 @@ import Menu from "./Components/Menu/Menu";
 import CartDialog from "./Components/CartDialog/CartDialog";
 import Details from "./Components/Details/Details";
 import UserDetails from "./Components/Details/UserDetails";
+import FlowerDetails from "./Components/Details/FlowerDetails";
 import Order from "./Components/Order/Order";
 import UserCRUD from "./Components/UserCRUD/UserCRUD";
+import AddNewUser from "./Components/UserCRUD/AddNewUser";
+import AddNewFlower from "./Components/FlowerCRUD/AddNewFlower";
+import FlowerCRUD from "./Components/FlowerCRUD/FlowerCRUD";
 import Login from "./Components/Login/Login";
 import ResetPassword from "./Components/ResetPassword/ResetPassword";
 import Signup from "./Components/Signup/join_us";
@@ -16,11 +20,6 @@ import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
 import Footer from "./Components/Footer/Footer";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import axios from "axios";
-import {
-  setLoggedInUser,
-  setLoggedInUserRole
-} from "./Redux/Actions";
 
 const mapStateToProps = state => {
   return {
@@ -34,22 +33,6 @@ const mapStateToProps = state => {
 
 class App extends Component {
   
-  // componentDidMount() {
-  //   console.log('componentDidMount');
-  //   this.interval = setInterval(() => 
-  //     axios.get('/is_loged') 
-  //       .then(isLoged =>{ 
-  //         isLoged = isLoged.data
-  //         if(!isLoged){
-  //           console.log(`he isn't loged`);
-  //           this.props.dispatch(setLoggedInUser(null))
-  //           this.props.dispatch(setLoggedInUserRole(null))
-  //         }
-  //         else console.log('he is still loged');
-  //       }
-  //       ), 60000);
-  //       // ), 900000);
-  // }
   
   render() {
     return (
@@ -63,10 +46,16 @@ class App extends Component {
             <Switch>
               <Route path="/search/" component={ProductList} />
               <Route path="/" exact component={ProductList} />
+              <Route path="/AddNewUser" exact component={AddNewUser} />
+              <Route path="/AddNewFlower" exact component={AddNewFlower} />
               <Route path="/user_CRUD" exact component={UserCRUD} />
+              <Route path="/flower_CRUD" exact component={FlowerCRUD} />
               <Route path="/users/UserDetails/:id" component={UserDetails} />
+              {/* <Route path="/flowers/FlowerDetails/:id" component={FlowerDetails} /> */}
+              <Route path="/flowers/FlowerDetails/:id" component={FlowerDetails} />
               <Route path="/details/:id" component={Details} />
               <Route path="/about" render={() => <div>About us</div>} />
+              <Route path="/info" render={() => <div>info</div>} />
               <Route path="/login" component={Login} />
               <Route path="/reset_password" component={ResetPassword} />
               <Route path="/join_us" component={Signup} />

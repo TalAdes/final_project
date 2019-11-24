@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 import queryString from "query-string";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { dataForRenderingMenuAxios } from "../../Data";
+import Api from "../../Api";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import { loadCSS } from "fg-loadcss/src/loadCSS";
@@ -33,17 +33,17 @@ class ConnectedMenu extends Component {
   }
 
   componentDidMount() {
-    var x = dataForRenderingMenuAxios;
-    x.then(arry =>
-      {
-      arry = arry.data  
-      this.setState({'menuItems' : arry, 'expandedItems' : arry.reduce((accum, current) => {
-        if (current.type === "title") {
-          accum[current.id] = true;
-        }
-        return accum;
-        }, {})})
-      })
+      Api.menuData()
+      .then(arry =>
+        {
+        arry = arry.data  
+        this.setState({'menuItems' : arry, 'expandedItems' : arry.reduce((accum, current) => {
+          if (current.type === "title") {
+            accum[current.id] = true;
+          }
+          return accum;
+          }, {})})
+        })
     
     loadCSS("https://use.fontawesome.com/releases/v5.1.0/css/all.css");
   }

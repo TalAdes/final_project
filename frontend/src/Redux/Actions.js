@@ -12,9 +12,9 @@ export const deleteCartItem = id => ({
   type: CONSTANTS.DELETE_CART_ITEM,
   payload: id
 });
-export const toggleMenu = () => ({
+export const toggleMenu = (a=null) => ({
   type: CONSTANTS.TOGGLE_MENU,
-  payload: null
+  payload: a
 });
 export const toggleUserMenu = () => ({
   type: CONSTANTS.TOGGLE_USER_MENU,
@@ -26,6 +26,10 @@ export const updateCartItemQnt = obj => ({
 });
 export const setCheckedOutItems = items => ({
   type: CONSTANTS.SET_CHECKEDOUT_ITEMS,
+  payload: items
+});
+export const setCartItems = items => ({
+  type: CONSTANTS.SET_CART_ITEMS,
   payload: items
 });
 export const setLoggedInUser = user => ({

@@ -34,12 +34,16 @@ const rootReducer = (state = initialState, action) => {
     }
     case CONSTANTS.SHOW_CART_DLG:
       return { ...state, showCartDialog: action.payload };
+    case CONSTANTS.SET_CART_ITEMS:
+      return { ...state, cartItems: [] };
     case CONSTANTS.DELETE_CART_ITEM:
       return {
         ...state,
         cartItems: state.cartItems.filter(x => x.id !== action.payload)
       };
     case CONSTANTS.TOGGLE_MENU:
+      if(action.payload !== null)
+        return { ...state, showMenu: action.payload };
       return { ...state, showMenu: !state.showMenu };
     case CONSTANTS.TOGGLE_USER_MENU:
       return { ...state, showUserMenu: !state.showUserMenu };

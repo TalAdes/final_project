@@ -19,24 +19,23 @@ const BranchModel = require('../models/branches');
 	router.post('/upload_flower', function (req, res) {
 		console.log("welcome to upload flower");
 		var uploadpath = "";
-		FlowerModel.find().sort({ id: 1 }).then(function (resultArry) {
-			var id = resultArry.length + 1;
-			var name = req.body.add_flower_name;
-			console.log(description);
-			var color = req.body.add_flower_color_name;
-			var description = req.body.add_flower_description_name;
-			var price = req.body.add_flower_price_name;
-			var root = __dirname.substring(0, __dirname.lastIndexOf("\\") + 1)
-			console.log(name);
-			console.log(color);
-			console.log(price);
-			if (resultArry.some(x => x.name === name)) {
-				console.log("err");
-				result = "ERROR1";
-				managerRole = resultArry.find(x => x.name == req.body.managerName).role;
-				res.redirect('/#flowers');
-			}
+		
+		FlowerModel.find().then(function (resultArry){
+			var data = req.body
+			var id = (Math.max.apply(null, resultArry.map(function(x){ return x.id}))+1).toString()
+			data['id'] = id.toString()
+			
+			var name        = data.name
 
+			var root = __dirname.substring(0, __dirname.lastIndexOf("\\") + 1)
+
+			if (resultArry.some(x => x.name === name)) {
+				res.json({
+					'error' : "this name was already taken",
+					'isRegisteredSuccesfully' : false
+				});
+				return;
+			}
 			else {
 				// maybe i should check also about req.files.upfile, but i dont think it necessary
 				if (req.files) {
@@ -44,33 +43,34 @@ const BranchModel = require('../models/branches');
 					var file = req.files.add_flower_files_name, name = file.name;
 					uploadpath = root + 'public/images/flowers/' + name;
 					file.mv(uploadpath, function (err) {
-						uploadpath = "images/" + name;
+						data ['src'] = "images/" + name;
 						if (err) {
 							console.log("File Upload Failed", name, err);
-							res.send("Error Occured!")
+							res.send("Error Occured!, image issue")
+							return ;
 						}
 						else {
 							console.log("File Uploaded", name);
+							saveFlower(res, data);
+							return;
 						}
-						saveFlower(res, id, req.body.add_flower_name, description, color, price, uploadpath);
 					});
 				}
 				else {
 					console.log("try to upload url");
 					dest = root + 'public/images/';
 					if (req.body.image_url != "") {
-						var data = { url: req.body.image_url, dest: root + 'public/images/' }
-						download.image(data).then(({ filename, image }) => {
-							uploadpath = "images/" + filename.substring(filename.lastIndexOf("\\") + 1, filename.length);
-							console.log("uploadPath:"),
-								console.log(uploadpath),
-								console.log('File saved to', filename),
-								saveFlower(res, id, req.body.add_flower_name, description, color, price, uploadpath)
-						}).catch((err) => {
-							console.error(err)
+						var _data = { url: req.body.image_url, dest: root + 'public/images/' }
+						download.image(_data).then(({ filename, image }) => {
+							data ['src'] = "images/" + filename.substring(filename.lastIndexOf("\\") + 1, filename.length);
+							saveFlower(res, data);
+							return;
+							}).catch((err) => {
+							res.send("Error Occured!, image issue")
+							return ;
 						});
 					}
-					else saveFlower(res, id, req.body.add_flower_name, description, color, price, uploadpath);
+					else saveFlower(res, data);
 				}
 			};
 		});
@@ -117,11 +117,25 @@ const BranchModel = require('../models/branches');
 	});
 }
 
-function saveFlower(res, id, name, description, color, price, src, status) {
+function saveFlower(res,data) {
 
-	FlowerModel.insertMany({ id: id, name: name, description: description, color: color, price: price, src: src, status: status }, function () {
-		res.redirect('/#flowers');
-	});
+	FlowerModel.insertMany({ 	
+							name: data.name, 
+							price: data.price, 
+							id: data.id,
+							color: data.color, 
+							category: data.category,
+							quantity: data.quantity, 
+							hot: data.hot, 
+							description: data.description, 
+							status: data.status,
+							src: data.src,
+							imageUrls: data.src
+						}).then(() => res.json({
+							'isRegisteredSuccesfully' : true
+						})).catch(() => res.json({
+							'isRegisteredSuccesfully' : false
+						}))
 }
 
 function updateFlower(res, id, name, description, color, price) {

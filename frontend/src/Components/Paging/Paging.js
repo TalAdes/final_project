@@ -71,7 +71,7 @@ const Paging = props => {
       </IconButton>
       Page:
       <TextField
-        type="number"
+        type="text"
         style={{ marginLeft: 5, width: 50,  marginRight: 10 }}
         inputProps={{
           className:props.classes.input
