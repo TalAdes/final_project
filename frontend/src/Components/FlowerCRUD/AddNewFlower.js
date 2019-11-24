@@ -156,7 +156,7 @@ class ConnectedAddNewFlower extends Component {
             label="description"
             type="text"
             value={this.state.description}
-            multiline
+
             onChange={e => {
               this.setState({ description: e.target.value });
             }}
