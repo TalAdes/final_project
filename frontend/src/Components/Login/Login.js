@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { ReCaptcha } from 'react-recaptcha-google'
 import { withRouter, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import Auth from "../../Auth";
@@ -9,12 +10,41 @@ import { setLoggedInUser, setLoggedInUserRole } from "../../Redux/Actions";
 import "./Login.css";
 
 class ConnectedLogin extends Component {
-  state = {
-    userName: "",
-    pass: "",
-    redirectToReferrer: false
-  };
+  
+  constructor(props, context) {
+    super(props, context);
+    this.onLoadRecaptcha = this.onLoadRecaptcha.bind(this);
+    this.verifyCallback = this.verifyCallback.bind(this);
+    this.state = {
+      userName: "",
+      pass: "",
+      captcha: false,
+      redirectToReferrer: false
+    };
+  }
+  componentDidMount() {
+    if (this.captchaVerify) {
+        console.log("started, just a second...")
+        this.captchaVerify.reset();
+    }
+  }
+  onLoadRecaptcha() {
+      if (this.captchaVerify) {
+          this.captchaVerify.reset();
+      }
+  }
+  verifyCallback(recaptchaToken) {
+    // Here you will get the final recaptchaToken!!!  
+    //i think to disable button till now
+    this.setState({captcha : true})
+    setTimeout(() => {
+      this.captchaVerify.reset();
+      this.setState({captcha : false})
 
+    }, 40000);
+
+
+  }
   render() {
     // Don't working...
     const { from } = this.props.location.state || { from: { pathname: "/" } };
@@ -29,7 +59,7 @@ class ConnectedLogin extends Component {
         <div
           style={{
             height: 200,
-            width: 200,
+            width: 304,
             display: "flex",
             flexDirection: "column"
           }}
@@ -45,22 +75,38 @@ class ConnectedLogin extends Component {
             Log in
           </div>
           <TextField
-            value={this.state.userName}
             placeholder="User name"
+            value={this.state.userName}
             onChange={e => {
               this.setState({ userName: e.target.value });
             }}
           />
           <TextField
+            placeholder="Password"
+            style={{ marginTop: 10,marginBottom: 10 }}
             value={this.state.pass}
             type="password"
-            placeholder="Password"
             onChange={e => {
               this.setState({ pass: e.target.value });
             }}
           />
+          
+          <ReCaptcha
+            style={{ marginTop: 10 }}
+            ref={(el) => {this.captchaVerify = el;}}
+            size="normal"
+            data-theme="dark"            
+            render="explicit"
+            sitekey="6LecVsQUAAAAACLHjV6xn_JgA6Tvon_mFXADdSeD"
+            onloadCallback={this.onLoadRecaptcha}
+            verifyCallback={this.verifyCallback}
+          />
+          
           <Button
             style={{ marginTop: 10 }}
+            disabled={  !this.state.userName.toString().replace(/\s/g, '').length ||
+                        !this.state.pass.toString().replace(/\s/g, '').length ||
+                        !this.state.captcha}
             variant="outlined"
             color="primary"
             onClick={() => {

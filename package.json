@@ -35,6 +35,7 @@
     "passport": "^0.4.0",
     "passport-local-mongoose": "^5.0.1",
     "react-fontawesome": "^1.7.1",
+    "react-recaptcha-google": "^1.1.1",
     "react-stripe-checkout": "^2.6.3",
     "react-toastify": "^5.4.1",
     "redux": "^4.0.4",

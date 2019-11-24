@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { loadReCaptcha } from 'react-recaptcha-google'
 import "./App.css";
 import Header from "./Components/Header/Header.js";
 import ProductList from "./Components/ProductList/ProductList";
@@ -33,6 +34,9 @@ const mapStateToProps = state => {
 
 class App extends Component {
   
+  componentDidMount() {
+    loadReCaptcha();
+  }
   
   render() {
     return (
