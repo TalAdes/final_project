@@ -5,9 +5,19 @@ import { connect } from "react-redux";
 import Auth from "../../Auth";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import { setLoggedInUser, setLoggedInUserRole } from "../../Redux/Actions";
+import { setLoggedInUser, setLoggedInUserEmail, setLoggedInUserRole ,setCartItems} from "../../Redux/Actions";
 
 import "./Login.css";
+import Api from "../../Api";
+
+
+
+const mapStateToProps = state => {
+  return {
+    loggedInUser: state.loggedInUser,
+  };
+};
+
 
 class ConnectedLogin extends Component {
   
@@ -33,18 +43,22 @@ class ConnectedLogin extends Component {
           this.captchaVerify.reset();
       }
   }
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
   verifyCallback(recaptchaToken) {
     // Here you will get the final recaptchaToken!!!  
     //i think to disable button till now
     this.setState({captcha : true})
-    setTimeout(() => {
-      this.captchaVerify.reset();
-      this.setState({captcha : false})
-
-    }, 40000);
-
-
+    this.sleep(35000).then(()=>{
+      if(!this.props.loggedInUser){// only if no one is logged in....
+        this.captchaVerify.reset();
+        this.setState({captcha : false})
+      }
+    })
   }
+
+
   render() {
     // Don't working...
     const { from } = this.props.location.state || { from: { pathname: "/" } };
@@ -105,8 +119,9 @@ class ConnectedLogin extends Component {
           <Button
             style={{ marginTop: 10 }}
             disabled={  !this.state.userName.toString().replace(/\s/g, '').length ||
-                        !this.state.pass.toString().replace(/\s/g, '').length ||
-                        !this.state.captcha}
+                        !this.state.pass.toString().replace(/\s/g, '').length
+                        // !this.state.captcha
+                      }
             variant="outlined"
             color="primary"
             onClick={() => {
@@ -123,8 +138,11 @@ class ConnectedLogin extends Component {
 
                 // If we get here, authentication was success.
                 this.props.dispatch(setLoggedInUser( user.name ));
-                // this.props.dispatch(setLoggedInUser({user : user.name}));
+                this.props.dispatch(setLoggedInUserEmail(user.email));
                 this.props.dispatch(setLoggedInUserRole(user.role));
+                Api.getCartItemsMongoDB()
+                  .then((res)=>
+                this.props.dispatch(setCartItems(res.data)))
                 this.setState(() => ({
                   redirectToReferrer: true
                 }));
@@ -156,6 +174,6 @@ class ConnectedLogin extends Component {
     );
   }
 }
-const Login = withRouter(connect()(ConnectedLogin));
+const Login = withRouter(connect(mapStateToProps)(ConnectedLogin));
 
 export default Login;

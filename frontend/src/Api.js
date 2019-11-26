@@ -16,6 +16,13 @@ const Api = {
   menuWarehouseData         : () =>       axios.get('/menuWarehouseData'),
   filterData                : () =>       axios.get('/filterData'),
   sampleProductsAxios       : () =>       axios.get('/sampleProductsAxios'),
+  
+  addItemInCartMongoDB       : (flower) =>      axios.post('/cart/addItemInCartMongoDB',{flower}),
+  deleteCartItemMongoDB       : (id) =>     axios.post('/cart/deleteCartItemMongoDB',{id}),
+  updateCartItemQntMongoDB       : (data) =>  axios.post('/cart/updateCartItemQntMongoDB',data),
+  getCartItemsMongoDB       : () =>      axios.get('/cart/getCartItemsMongoDB'),
+  
+  setCartItemsMongoDB       : (empty_arry) =>       axios.post('/cart/setCartItemsMongoDB',{empty_arry}),
 
   getItemUsingID(id) {
     return new Promise((resolve, reject) => {

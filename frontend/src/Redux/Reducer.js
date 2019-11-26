@@ -32,29 +32,11 @@ const rootReducer = (state = initialState, action) => {
       // No, add a new item.
       return { ...state, cartItems: state.cartItems.concat(action.payload) };
     }
-    case CONSTANTS.SHOW_CART_DLG:
-      return { ...state, showCartDialog: action.payload };
-    case CONSTANTS.SET_CART_ITEMS:
-      return { ...state, cartItems: [] };
     case CONSTANTS.DELETE_CART_ITEM:
       return {
         ...state,
         cartItems: state.cartItems.filter(x => x.id !== action.payload)
       };
-    case CONSTANTS.TOGGLE_MENU:
-      if(action.payload !== null)
-        return { ...state, showMenu: action.payload };
-      return { ...state, showMenu: !state.showMenu };
-    case CONSTANTS.TOGGLE_USER_MENU:
-      return { ...state, showUserMenu: !state.showUserMenu };
-    case CONSTANTS.SET_LOGGED_IN_USER:
-      return { ...state, loggedInUser: action.payload };
-    case CONSTANTS.SET_LOGGED_IN_USER_ROLE:
-      return { ...state, loggedInUserRole: action.payload };
-    case CONSTANTS.SET_MENU_STATUS:
-      return { ...state, menuStatus: action.payload };
-    case CONSTANTS.SET_CHECKEDOUT_ITEMS:
-      return { ...state, checkedOutItems: action.payload };
     case CONSTANTS.UPDATE_CART_ITEM_QUANTITY: {
       let index = state.cartItems.findIndex(x => x.id === action.payload.id);
 
@@ -72,6 +54,32 @@ const rootReducer = (state = initialState, action) => {
       // If we couldn't find such item, do nothing.
       return state;
     }
+    
+    
+    
+    case CONSTANTS.SET_CART_ITEMS:
+      return { ...state, cartItems: action.payload };
+    case CONSTANTS.SET_CHECKEDOUT_ITEMS:
+      return { ...state, checkedOutItems: action.payload };
+    
+    
+    case CONSTANTS.SHOW_CART_DLG:
+      return { ...state, showCartDialog: action.payload };
+    case CONSTANTS.TOGGLE_MENU:
+      if(action.payload !== null)
+        return { ...state, showMenu: action.payload };
+      return { ...state, showMenu: !state.showMenu };
+    case CONSTANTS.TOGGLE_USER_MENU:
+      return { ...state, showUserMenu: !state.showUserMenu };
+    case CONSTANTS.SET_LOGGED_IN_USER:
+      return { ...state, loggedInUser: action.payload };
+    case CONSTANTS.SET_LOGGED_IN_USER_EMAIL:
+      return { ...state, loggedInUserEmail: action.payload };
+    case CONSTANTS.SET_LOGGED_IN_USER_ROLE:
+      return { ...state, loggedInUserRole: action.payload };
+    case CONSTANTS.SET_MENU_STATUS:
+      return { ...state, menuStatus: action.payload };
+    
     default:
       return state;
   }

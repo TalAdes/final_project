@@ -1,17 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const download = require('image-downloader')
-const rsa = require('Node-RSA')
-const nodemailer = require('nodemailer');
-const crypto = require('crypto');
 
 
 
 /* setting DB path  */
 const FlowerModel = require('../models/flowers');
-const UserModel = require('../models/users');
-const BranchModel = require('../models/branches');
-
 
 
 //flowers CRUD
@@ -61,11 +55,11 @@ const BranchModel = require('../models/branches');
 					dest = root + 'public/images/';
 					if (req.body.image_url != "") {
 						var _data = { url: req.body.image_url, dest: root + 'public/images/' }
-						download.image(_data).then(({ filename, image }) => {
+						download.image(_data).then(({ filename }) => {
 							data ['src'] = "images/" + filename.substring(filename.lastIndexOf("\\") + 1, filename.length);
 							saveFlower(res, data);
 							return;
-							}).catch((err) => {
+							}).catch(() => {
 							res.send("Error Occured!, image issue")
 							return ;
 						});

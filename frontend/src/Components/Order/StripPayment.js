@@ -25,8 +25,6 @@ function Stripe() {
 
   var handleToken = async (token, addresses) => {
     var that = this.props.that
-    that.props.dispatch(setCartItems([]));
-    that.props.dispatch(setCheckedOutItems([]));
     //   const response = await axios.post(
     //   "/checkout",
     //   { token, product }

@@ -1,6 +1,19 @@
 let mongoose = require('mongoose')
 const passportLocalMongoose = require('passport-local-mongoose');
 
+let flowerSchema = new mongoose.Schema({
+  name: String,
+  description: String,
+  color: String,
+  category: String,
+  status: String,
+  imageUrls: String,
+  id: Number,
+  price: String,
+  src : String,
+  hot : String,
+  quantity : Number
+})
 
 
 let userSchema = new mongoose.Schema({
@@ -18,6 +31,7 @@ let userSchema = new mongoose.Schema({
   resetPasswordToken: String,
   resetPasswordExpires: String,
   email: String,
+  cartItems: [flowerSchema],
   src : String,
   date: Date
 })

@@ -1,15 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const download = require('image-downloader')
-const rsa = require('Node-RSA')
-const nodemailer = require('nodemailer');
-const crypto = require('crypto');
 
-
-/* setting DB path  */
-const FlowerModel = require('../models/flowers');
 const UserModel = require('../models/users');
-const BranchModel = require('../models/branches');
+
+
+var key = require('./index');
+key = key.key
+
 
 //users CRUD
 	router.post('/create_user', function (req, res) {
@@ -162,7 +160,7 @@ const BranchModel = require('../models/branches');
 							var _data = { url: data.image_url, dest: dest }
 							console.log('***********************************');
 							download.image(_data)
-								.then(async function({filename,l}){
+								.then(async function({filename}){
 									data['src'] = "images/" + filename.substring(filename.lastIndexOf("\\") + 1, filename.length)
 									console.log('this should be 1')
 									let response = await _register(data,pass)
@@ -432,7 +430,7 @@ const BranchModel = require('../models/branches');
 						// UserModel.findOne({ id: req.query.id })
 						// UserModel.findOne({ id: req.query.id.toString() })
 						UserModel.findOneAndUpdate({ id: Number(req.query.id) }, { status: "deleted" }, { new: true })
-							.then(function (tt) {
+							.then(function () {
 								UserModel.find().sort({ id: 1 }).then(function (resultArry) {
 									res.render('generate_users', { users: resultArry, role: req.user.role});
 								});

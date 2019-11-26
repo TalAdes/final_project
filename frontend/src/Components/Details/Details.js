@@ -78,6 +78,7 @@ class ConnectedDetails extends Component {
     return { __html: md.render(data) };
   }
 
+
   render() {
     if (this.state.unfinishedTasks !== 0) {
       return <CircularProgress className="circular" />;
@@ -155,7 +156,7 @@ class ConnectedDetails extends Component {
               (null)
             }
 
-            { this.props.loggedInUser !== null ? 
+            { this.props.loggedInUserRole === 'subscriber' ? 
               (
               <Button
                 style={{ width: 200, marginTop: 5 }}
@@ -168,6 +169,13 @@ class ConnectedDetails extends Component {
                       quantity: parseInt(this.state.quantity)
                     })
                   );
+                  Api.addItemInCartMongoDB({
+                    ...this.state.item,
+                    quantity: parseInt(this.state.quantity)
+                  }).then(()=> {
+                    alert('item added succesfully')
+                    this.props.history.push("/");
+                  })
                 }}
               >
                 Add to Cart <AddShoppingCartIcon style={{ marginLeft: 5 }} />

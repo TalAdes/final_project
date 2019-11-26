@@ -12,43 +12,66 @@ import StripPayment from './StripPayment'
 import StripeCheckout from "react-stripe-checkout";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Api from "../../Api";
 
 
 const mapStateToProps = state => {
   return {
-    checkedOutItems: state.checkedOutItems
+    checkedOutItems: state.checkedOutItems,
+    userEmail: state.loggedInUserEmail
   };
 };
 
-const product = {
-  name: "Tesla Roadster",
-  price: 64998.67,
-  description: "Cool car"
-}
 
-const handleToken = async (token, addresses) => {
-  
-  const response = await axios.post(
-    "/checkout",
-    { token, product }
-  );
-  const { status } = response.data;
-  console.log("Response:", response.data);
-  if (status === "success") {
-    toast("Success! Check email for details", { type: "success" });
-  } else {
-    toast("Something went wrong", { type: "error" });
-  }
-}
 
 // This component shows the items user checked out from the cart.
 class ConnectedOrder extends Component {
+  constructor(props) {
+    super(props);
+      this.state = {
+        totalPrice: 0,
+      };
+
+      this.handleToken = this.handleToken.bind(this);
+    }
   
+  async handleToken(token, addresses){
+    
+    
+
+    var product = {
+      name: "Michael's and Tal's Flowers LTD",
+      price: this.state.totalPrice*100,
+      description: this.props.checkedOutItems.map((item, index) => {
+        return (
+            item.name
+        );
+      })
+    }
+
+    const response = await axios.post(
+      "/cart/checkout",
+      { token, product }
+    );
+    const { status } = response.data;
+    console.log("Response:", response.data);
+    if (status === "success") {
+      toast("Success! Check email for details", { type: "success" });
+      this.props.dispatch(setCheckedOutItems([]));
+      this.props.dispatch(setCartItems([]));
+      Api.setCartItemsMongoDB([])
+    } else {
+      toast("Something went wrong", { type: "error" });
+    }
+  }
   
   render() {
     let totalPrice = this.props.checkedOutItems.reduce((accumulator, item) => {
       return accumulator + item.price * item.quantity;
     }, 0);
+    if (this.state.totalPrice === 0) {
+      this.setState({totalPrice})
+    }
 
     return (
       <div style={{ padding: 10 }}>
@@ -86,18 +109,7 @@ class ConnectedOrder extends Component {
         >
           Total price: {totalPrice} $
         </div>
-        {/* <Button
-          color="primary"
-          variant="outlined"
-          disabled={totalPrice === 0}
-          onClick={() => {
-            this.props.dispatch(setCheckedOutItems([]));
-            this.props.dispatch(setCartItems([]));
-          }}
-          style={{ margin: 5, marginTop: 30 }}
-        >
-          Purchase
-        </Button> */}
+        
         <Button
           color="secondary"
           variant="outlined"
@@ -109,25 +121,25 @@ class ConnectedOrder extends Component {
           Discard
         </Button>
       {/* <StripPayment that={this} /> */}
-      <div onClick={() => {
-        setTimeout(
-          () =>
-            {this.props.dispatch(setCheckedOutItems([]));
-            this.props.dispatch(setCartItems([]));}
-          ,
-          3000
-      );
-            
-          }}>
+        <div onClick={() => {
+          // setTimeout(
+          //   () =>
+          //     {
+          //       this.props.dispatch(setCheckedOutItems([]));
+          //       this.props.dispatch(setCartItems([]));
+          //       Api.setCartItemsMongoDB([])
+          //     }
+          // ,3000);
+        }}>
 
-      <StripeCheckout
-        stripeKey="pk_test_5vKC2C8nXDr2zF7U4fAUk0j60045VLH3vN"
-        token={handleToken}
-        amount={product.price * 100}
-        name="Tesla Roadster"
-        billingAddress
-        shippingAddress
-        />
+          <StripeCheckout
+            stripeKey="pk_test_5vKC2C8nXDr2zF7U4fAUk0j60045VLH3vN"
+            token={this.handleToken}
+            amount={totalPrice*100}
+            name="Happy Flowers LTD"
+            email={this.props.userEmail}
+            shippingAddress
+            />
         </div>
       </div>
     );

@@ -11,7 +11,7 @@ let flowerSchema = new mongoose.Schema({
   price: String,
   src : String,
   hot : String,
-  quantity : String
+  quantity : Number
 })
 
 module.exports = mongoose.model('Flowers', flowerSchema)

@@ -1,9 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const download = require('image-downloader')
-const rsa = require('Node-RSA')
-const nodemailer = require('nodemailer');
-const crypto = require('crypto');
 
 
 /* setting DB path  */

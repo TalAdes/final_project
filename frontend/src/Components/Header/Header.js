@@ -12,6 +12,7 @@ import {
   showCartDlg,
   toggleMenu,
   setLoggedInUser,
+  setLoggedInUserEmail,
   setLoggedInUserRole,
   setCheckedOutItems
 } from "../../Redux/Actions";
@@ -40,8 +41,8 @@ class ConnectedHeader extends Component {
   state = {
     searchTerm: "",
     anchorEl: null,
-    categoryFilter: null,
-    categoryOptions : null
+    categoryFilter: [],
+    categoryOptions : []
   };
 
 
@@ -189,7 +190,7 @@ class ConnectedHeader extends Component {
                 <Person />
               </Avatar>
             )}
-            { this.props.loggedInUser !== null ? 
+            { this.props.loggedInUserRole === 'subscriber' ? 
               (<Tooltip title="Cart">
                 <IconButton
                   aria-label="Cart"
@@ -254,6 +255,8 @@ class ConnectedHeader extends Component {
                     else{
                       this.props.dispatch(setCheckedOutItems([]));
                       this.props.dispatch(setLoggedInUser(null));
+                      this.props.dispatch(setLoggedInUserEmail(null));
+                      this.props.dispatch(setLoggedInUserRole(null));
                       this.props.history.push("/");
                     }
                   });

@@ -9,6 +9,8 @@ import {
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
+import Api from '../../Api';
+
 
 const CartRow = props => {
   let { item } = props;
@@ -44,6 +46,10 @@ const CartRow = props => {
                 quantity
               })
             );
+            Api.updateCartItemQntMongoDB({
+              id: item.id,
+              quantity
+            });
           }}
         />
       </TableCell>
@@ -53,6 +59,7 @@ const CartRow = props => {
           onClick={() => {
             // Delete this cart item.
             props.dispatch(deleteCartItem(item.id));
+            Api.deleteCartItemMongoDB(item.id);
           }}
         >
           Delete

@@ -1,10 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const download = require('image-downloader')
 const rsa = require('Node-RSA')
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
-const passport = require('passport');
 const stripe = require("stripe")('sk_test_DKK9B8vDDO2VjewUYB7pkuUt00R6nEVqP0');
 const uuid = require("uuid/v4");
 
@@ -12,11 +10,10 @@ const uuid = require("uuid/v4");
 /* setting DB path  */
 const FlowerModel = require('../models/flowers');
 const UserModel = require('../models/users');
-const BranchModel = require('../models/branches');
 
-key = new rsa({ b: 512 })
+
+const key = new rsa({ b: 512 })
 const pk = key.exportKey(['public'])
-
 
 
 /* general purpose http methods */
@@ -327,6 +324,7 @@ const pk = key.exportKey(['public'])
 								}
 								// return res.send('login sucessed');
 								res.json({
+									'email':_user.email,
 									'role':_user.role,
 									'name':_user.name,
 									'isAuthenticated':true,
@@ -423,14 +421,14 @@ const pk = key.exportKey(['public'])
 		.then(image => res.json([image]))
 	});
 
-	router.post('/_checkout', function (req, res) {
+	router.post('/_checkout', function () {
 
 		try {
 			stripe.customers.list(
 				{
 				  limit: 3,
 				},
-				function(err, customer) {
+				function() {
 				 console.log('succcesed');
 				}
 			  )
@@ -441,76 +439,7 @@ const pk = key.exportKey(['public'])
 
 	})
 
-	router.post("/checkout", async (req, res) => {
-		console.log("Request:", req.body);
-	  
-		let error;
-		let status;
-		try {
-		  const { product, token } = req.body;
-	  
-		  const customer = await stripe.customers.create({
-			email: token.email,
-			source: token.id
-		  });
-	  
-		  const idempotency_key = uuid();
-		  const charge = await stripe.charges.create(
-			{
-			  amount: product.price * 100,
-			  currency: "usd",
-			  customer: customer.id,
-			//   receipt_email: token.email,
-			  receipt_email: customer.email,
-			  description: `Purchased the ${product.name}`,
-			  shipping: {
-				name: token.card.name,
-				address: {
-				  line1: token.card.address_line1,
-				  line2: token.card.address_line2,
-				  city: token.card.address_city,
-				  country: token.card.address_country,
-				  postal_code: token.card.address_zip
-				}
-			  }
-			},
-			{
-			  idempotency_key
-			}
-		  );
-		  console.log("Charge:", { charge });
-		  status = "success";
-		  const transporter = nodemailer.createTransport({
-			service: 'gmail',
-			auth: {
-				user: `${process.env.email_user_name}`,
-				pass: `${process.env.email_password}`,
-			},
-			});
-			const mailOptions = {
-				//   to: `${user.email}`,
-				to: `${customer.email}`,
-				//   to: `${process.env.email_user_name_target}`,
-				subject: 'Thank you, this is your receipt',
-				text:
-					`you succesfuly purchased: ${charge.description}, and paied for it: ${charge.amount} usd`,
-			};
-		  transporter.sendMail(mailOptions, (err, response) => {
-			if (err) {
-				console.error('there was an error: ', err);
-				res.send('there was an error with your mail addres please contact the admin');
-			} else {
-				console.log('here is the res: ', response);
-				res.send('recovery email sent');
-			}
-		})
-		} catch (error) {
-		  console.error("Error:", error);
-		  status = "failure";
-		}
-	  
-		res.json({ error, status });
-	});
+	
 }
 
 
@@ -721,4 +650,6 @@ router.get('/who_is_loged', function (req, res) {
 	res.send('no one')
 })
 
+// module.exports = {sk, router};
 module.exports = router;
+module.exports.key = key;

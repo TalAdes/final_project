@@ -8,6 +8,7 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const branchesRouter = require('./routes/branches');
 const flowersRouter = require('./routes/flowers');
+const cartRouter = require('./routes/cart');
 const upload = require('express-fileupload');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -62,6 +63,7 @@ passport.serializeUser(UserModel.serializeUser());
 passport.deserializeUser(UserModel.deserializeUser());
 
 
+app.use('/cart', cartRouter);
 app.use('/flowers', flowersRouter);
 app.use('/users', usersRouter);
 app.use('/branches', branchesRouter);
