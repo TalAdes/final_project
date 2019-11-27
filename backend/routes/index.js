@@ -20,6 +20,55 @@ const pk = key.exportKey(['public'])
 //GET
 {
 	
+	router.post('/getMyLastOrders', function (req, res) {
+		var user = req.user
+		if(user.role !== 'subscriber'){
+			res.send('i am not subscriber')
+			return;
+		}
+		stripe.charges.list(
+		// {customer : user.email},
+		// user.name,
+		{limit : 100},
+		function(err,orders){
+			var lastOrders = [];
+			var filtered = orders.data.filter(x => x.receipt_email === user.email )
+			filtered.forEach(element => {
+				lastOrders.push({	date: new Date(element.created*1000),
+									amount : element.amount,
+									description : element.description
+								})
+			});
+			res.send(lastOrders.slice(0,5));
+		})
+	});
+	
+
+	router.post('/getHisLastOrders', async function (req, res) {
+
+		var user = await UserModel.findOne({id:req.body.id})
+		var email = user.email;
+		if(user.role !== 'subscriber'){
+				res.send('this budyy is not subscriber')
+				return;
+			}
+
+		stripe.charges.list(
+		{limit : 100},
+		function(err,orders){
+			var lastOrders = [];
+			var filtered = orders.data.filter(x => x.receipt_email === email )
+			filtered.forEach(element => {
+				lastOrders.push({	date: new Date(element.created*1000),
+									amount : element.amount,
+									description : element.description
+								})
+			});
+			res.send(lastOrders.slice(0,5));
+		})
+	});
+	
+
 	router.get('/get_the_next_id', function (req, res) {
 	UserModel.find().then(function (resultArry){
 		return Math.max.apply(null,resultArry.map(function(x){ return x.id}))+1
@@ -29,7 +78,6 @@ const pk = key.exportKey(['public'])
 	router.get('/get_PK_and_random', function (req, res) {
 		// res.setHeader("Access-Control-Allow-Origin", "*")
 		
-		console.log("router.get('/get_PK_and_random', function (req, res) {")
 		//generate nuber between 0 to nine.
 		var rn = Math.floor(Math.random() * 10)
 		// res.send(rn);
@@ -292,10 +340,6 @@ const pk = key.exportKey(['public'])
 //POST
 {
 	router.post('/login', function (req, res) {
-		console.log('__________________________________________________________');
-		console.log("req.user:");
-		console.log(req.user);
-		console.log('__________________________________________________________');
 		var data = req.body
 		var result = ""
 		// serching the designated user
@@ -314,8 +358,6 @@ const pk = key.exportKey(['public'])
 						}
 					if(_user)
 						{
-							console.log("user")
-							console.log(_user)
 							req.login(_user,function(err){
 								if (err) 
 								{ 
@@ -569,6 +611,15 @@ router.post('/authorized_getUserDataUsingID', function (req, res) {
 	UserModel.findOne({id:id}).then(function (arry) {
 				res.send(arry);
 	});
+})
+
+router.get('/getUserData', function (req, res) {
+
+	if(!req.user){
+		res.send('hacker....')
+		return
+	}
+	res.send(req.user);
 })
 
 router.post('/authorized_getFlowerDataUsingID', function (req, res) {

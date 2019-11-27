@@ -15,14 +15,21 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 
 const mapStateToProps = state => {
-  return { open: state.showCartDialog, items: state.cartItems };
+  return { 
+    open: state.showCartDialog,
+    items: state.cartItems,
+    loggedInUserRole : state.loggedInUserRole
+  };
 };
 
 class ConnectedCartDialog extends Component {
   render() {
-    let totalPrice = this.props.items.reduce((accumulator, item) => {
-      return accumulator + item.price * item.quantity;
-    }, 0);
+    var totalPrice;
+    if (this.props.loggedInUserRole === 'subscriber') {
+      totalPrice = this.props.items.reduce((accumulator, item) => {
+        return accumulator + item.price * item.quantity;
+      }, 0);
+    
 
     return (
       <div>
@@ -97,6 +104,8 @@ class ConnectedCartDialog extends Component {
         </Dialog>
       </div>
     );
+    }
+    else return null
   }
 }
 const CartDialog = withRouter(connect(mapStateToProps)(ConnectedCartDialog));

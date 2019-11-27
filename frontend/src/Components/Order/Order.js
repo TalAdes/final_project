@@ -8,7 +8,6 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import { setCheckedOutItems ,setCartItems } from "../../Redux/Actions";
-import StripPayment from './StripPayment'
 import StripeCheckout from "react-stripe-checkout";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -56,10 +55,10 @@ class ConnectedOrder extends Component {
     const { status } = response.data;
     console.log("Response:", response.data);
     if (status === "success") {
-      toast("Success! Check email for details", { type: "success" });
       this.props.dispatch(setCheckedOutItems([]));
       this.props.dispatch(setCartItems([]));
       Api.setCartItemsMongoDB([])
+      toast("Success! Check email for details", { type: "success" });
     } else {
       toast("Something went wrong", { type: "error" });
     }
@@ -69,7 +68,7 @@ class ConnectedOrder extends Component {
     let totalPrice = this.props.checkedOutItems.reduce((accumulator, item) => {
       return accumulator + item.price * item.quantity;
     }, 0);
-    if (this.state.totalPrice === 0) {
+    if (this.state.totalPrice === 0 && this.props.checkedOutItems.length !==0) {
       this.setState({totalPrice})
     }
 

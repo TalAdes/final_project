@@ -13,10 +13,9 @@ const UserModel = require('../models/users');
 router.get('/getCartItemsMongoDB', async function (req, res) {
 
 	if(!req.user || req.user.role !== 'subscriber'){
-		res.send('hacker....')
+		res.send([])
 		return
 	}
-	console.log('sx');
 	res.send(req.user.cartItems)
 })
 
@@ -112,6 +111,7 @@ router.post("/checkout", async (req, res) => {
 		const { product, token } = req.body;
 	
 		const customer = await stripe.customers.create({
+		name: req.user.name,
 		email: req.user.email,
 		source: token.id
 	});
@@ -119,14 +119,14 @@ router.post("/checkout", async (req, res) => {
 	const idempotency_key = uuid();
 	const charge = await stripe.charges.create(
 	{
-		amount: product.price * 100,
+		amount: product.price,
 		currency: "usd",
 		customer: customer.id,
 	//   receipt_email: token.email,
 		receipt_email: customer.email,
 		description: `${product.description}`,
 		shipping: {
-			name: token.card.name,
+			name: req.user.name,
 			address: {
 				line1: token.card.address_line1,
 				line2: token.card.address_line2,

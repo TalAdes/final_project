@@ -21,6 +21,17 @@ import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
 import Footer from "./Components/Footer/Footer";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import {
+  showCartDlg,
+  setLoggedInUser,
+  setLoggedInUserRole,
+  setCartItems
+} from "./Redux/Actions";
+import axios from 'axios'
+import SelfDetails from "./Components/Details/SelfDetails";
+
+
+
 
 const mapStateToProps = state => {
   return {
@@ -36,45 +47,60 @@ class App extends Component {
   
   componentDidMount() {
     loadReCaptcha();
+    axios.get('/is_loged') 
+        .then(isLoged =>{ 
+          isLoged = isLoged.data
+          if(!isLoged){
+            this.props.dispatch(setLoggedInUser(null))
+            this.props.dispatch(setLoggedInUserRole(null))
+            this.props.dispatch(showCartDlg(false))
+            this.props.dispatch(setCartItems([]))
+          }
+        })
   }
   
   render() {
+    if (!this.props.loggedInUser) {
+      this.props.dispatch(setCartItems([]))
+    }
     return (
-      <div className="app">
-        <Header />
-        <div className="app-body">
-          <Menu />
-          <div className="content">
-            <CartDialog />
-            {/* changing container */}
-            <Switch>
-              <Route path="/search/" component={ProductList} />
-              <Route path="/" exact component={ProductList} />
-              <Route path="/AddNewUser" exact component={AddNewUser} />
-              <Route path="/AddNewFlower" exact component={AddNewFlower} />
-              <Route path="/user_CRUD" exact component={UserCRUD} />
-              <Route path="/flower_CRUD" exact component={FlowerCRUD} />
-              <Route path="/users/UserDetails/:id" component={UserDetails} />
-              {/* <Route path="/flowers/FlowerDetails/:id" component={FlowerDetails} /> */}
-              <Route path="/flowers/FlowerDetails/:id" component={FlowerDetails} />
-              <Route path="/details/:id" component={Details} />
-              <Route path="/about" render={() => <div>About us</div>} />
-              <Route path="/info" render={() => <div>info</div>} />
-              <Route path="/login" component={Login} />
-              <Route path="/reset_password" component={ResetPassword} />
-              <Route path="/join_us" component={Signup} />
-              <ProtectedRoute path="/order" component={Order} />
-              <Route
-                component={() => (
-                  <div style={{ padding: 20 }}>Page not found</div>
-                )}
-              />
-            </Switch>
+
+        <div className="app">
+          <Header />
+          <div className="app-body">
+            <Menu />
+            <div className="content">
+              <CartDialog />
+              {/* changing container */}
+              <Switch>
+                <Route path="/search/" component={ProductList} />
+                <Route path="/" exact component={ProductList} />
+                <Route path="/AddNewUser" exact component={AddNewUser} />
+                <Route path="/AddNewFlower" exact component={AddNewFlower} />
+                <Route path="/user_CRUD" exact component={UserCRUD} />
+                <Route path="/flower_CRUD" exact component={FlowerCRUD} />
+                <Route path="/users/UserDetails/:id" component={UserDetails} />
+                {/* <Route path="/flowers/FlowerDetails/:id" component={FlowerDetails} /> */}
+                <Route path="/flowers/FlowerDetails/:id" component={FlowerDetails} />
+                <Route path="/details/:id" component={Details} />
+                <Route path="/about" render={() => <div>About us</div>} />
+                <Route path="/info" render={() => <div>info</div>} />
+                <Route path="/login" component={Login} />
+                <Route path="/reset_password" component={ResetPassword} />
+                <Route path="/join_us" component={Signup} />
+                <ProtectedRoute path="/order" component={Order} />
+                <ProtectedRoute path="/my_area" component={SelfDetails} />
+                <Route
+                  component={() => (
+                    <div style={{ padding: 20 }}>Page not found</div>
+                  )}
+                />
+              </Switch>
+            </div>
           </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
-    );
+      )
   }
 }
 export default withRouter(connect(mapStateToProps)(App));

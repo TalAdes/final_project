@@ -144,7 +144,8 @@ class ConnectedHeader extends Component {
               color="primary"
               onClick={() => {
                 // Api.getDataFromDB().then(x => console.log(x))
-                Api.whoIsLoged().then(x => alert(x.data))
+                // Api.whoIsLoged().then(x => alert(x.data))
+                Api.getMyLastOrders().then(x => console.log(x.data))
               }}
             >
               TEST fetch data from db
@@ -242,11 +243,29 @@ class ConnectedHeader extends Component {
               <MenuItem
                 onClick={() => {
                   this.setState({ anchorEl: null });
-                  this.props.history.push("/order");
+                  this.props.history.push("/my_area");
                 }}
               >
                 My area
               </MenuItem>
+              <MenuItem
+                onClick={() => {
+                      alert('now we supose to move to Blog')
+                      //push...
+                }}
+              >
+                Blog
+              </MenuItem>
+            
+              <MenuItem
+                onClick={() => {
+                  alert('now we supose to move to Chat')
+                  //push...
+                }}
+              >
+                Chat
+              </MenuItem>
+            
               <MenuItem
                 onClick={() => {
                   Auth.signout(problem => {

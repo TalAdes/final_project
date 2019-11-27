@@ -5,6 +5,7 @@ const Api = {
   updateUsersDataToDB       : (user) =>   axios.post('/authorized_updateUsersDataToDB',{user}),
   updateFlowerDataToDB      : (flower) => axios.post('/authorized_updateFlowersDataToDB',{flower}),
   getUserDataUsingID       : (id) =>     axios.post('/authorized_getUserDataUsingID',{id}),
+  getUserData       : () =>     axios.get('/getUserData'),
   deleteUserData       : (user) =>     axios.post('/authorized_deleteUserData',{user}),
   deleteFlowerData       : (flower) =>     axios.post('/authorized_deleteFlowerData',{flower}),
   getFlowerDataUsingID       : (id) =>     axios.post('/authorized_getFlowerDataUsingID',{id}),
@@ -17,13 +18,14 @@ const Api = {
   filterData                : () =>       axios.get('/filterData'),
   sampleProductsAxios       : () =>       axios.get('/sampleProductsAxios'),
   
+  
+  getHisLastOrders       : (id) =>      axios.post('/getHisLastOrders',{id}),
+  getMyLastOrders       : (user) =>      axios.post('/getMyLastOrders',{user}),
+  getCartItemsMongoDB       : () =>      axios.get('/cart/getCartItemsMongoDB'),
   addItemInCartMongoDB       : (flower) =>      axios.post('/cart/addItemInCartMongoDB',{flower}),
   deleteCartItemMongoDB       : (id) =>     axios.post('/cart/deleteCartItemMongoDB',{id}),
   updateCartItemQntMongoDB       : (data) =>  axios.post('/cart/updateCartItemQntMongoDB',data),
-  getCartItemsMongoDB       : () =>      axios.get('/cart/getCartItemsMongoDB'),
-  
   setCartItemsMongoDB       : (empty_arry) =>       axios.post('/cart/setCartItemsMongoDB',{empty_arry}),
-
   getItemUsingID(id) {
     return new Promise((resolve, reject) => {
       setTimeout(async () => {
