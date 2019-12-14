@@ -95,7 +95,35 @@ class Footer extends Component {
             <div className="footerItem">Facebook</div>
           </a>
         </div>
-      
+        {/* Credits column */}
+        <div>
+            <div
+              style={{ color: "#504F5A", fontWeight: "bold", marginBottom: 10 }}
+            >
+              Credits Media
+            </div>
+            
+            <a
+              href="https://www.flaticon.com/authors/gregor-cresnar"
+              target="blank"
+              style={{
+                textDecoration: "none",
+              }}
+            >
+              <div className="footerItem">click me to see who create thumbs up icon</div>
+            </a>
+            <a
+              href="https://www.flaticon.com/authors/freepik"
+              target="blank"
+              style={{
+                textDecoration: "none",
+              }}
+            >
+              <div className="footerItem">click me to see who create thumbs down icon</div>
+            </a>
+            
+          </div>
+        
       </div>
     );
   }

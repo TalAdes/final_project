@@ -12,6 +12,7 @@ const UserModel = require('../models/users');
 
 router.get('/getCartItemsMongoDB', async function (req, res) {
 
+
 	if(!req.user || req.user.role !== 'subscriber'){
 		res.send([])
 		return

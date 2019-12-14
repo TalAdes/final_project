@@ -19,6 +19,8 @@ import ResetPassword from "./Components/ResetPassword/ResetPassword";
 import Signup from "./Components/Signup/join_us";
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
 import Footer from "./Components/Footer/Footer";
+import Chat from './Chat/components/Chat/Chat';
+import Join from './Chat/components/Join/Join';
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import {
@@ -62,6 +64,8 @@ class App extends Component {
   render() {
     if (!this.props.loggedInUser) {
       this.props.dispatch(setCartItems([]))
+      // this.props.history.push('/login')
+      // return
     }
     return (
 
@@ -73,6 +77,8 @@ class App extends Component {
               <CartDialog />
               {/* changing container */}
               <Switch>
+                <Route path="/chat/chat" component={Chat} />
+                <Route path="/chat/join" component={Join} />
                 <Route path="/search/" component={ProductList} />
                 <Route path="/" exact component={ProductList} />
                 <Route path="/AddNewUser" exact component={AddNewUser} />
@@ -80,7 +86,6 @@ class App extends Component {
                 <Route path="/user_CRUD" exact component={UserCRUD} />
                 <Route path="/flower_CRUD" exact component={FlowerCRUD} />
                 <Route path="/users/UserDetails/:id" component={UserDetails} />
-                {/* <Route path="/flowers/FlowerDetails/:id" component={FlowerDetails} /> */}
                 <Route path="/flowers/FlowerDetails/:id" component={FlowerDetails} />
                 <Route path="/details/:id" component={Details} />
                 <Route path="/about" render={() => <div>About us</div>} />

@@ -19,6 +19,7 @@ const Api = {
   sampleProductsAxios       : () =>       axios.get('/sampleProductsAxios'),
   
   
+  tryyyy       : () =>      axios.get('/chat/get_PK_and_random'),
   getHisLastOrders       : (id) =>      axios.post('/getHisLastOrders',{id}),
   getMyLastOrders       : (user) =>      axios.post('/getMyLastOrders',{user}),
   getCartItemsMongoDB       : () =>      axios.get('/cart/getCartItemsMongoDB'),

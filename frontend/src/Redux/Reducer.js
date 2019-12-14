@@ -36,7 +36,7 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         cartItems: state.cartItems.filter(x => x.id !== action.payload)
-      };
+    };
     case CONSTANTS.UPDATE_CART_ITEM_QUANTITY: {
       let index = state.cartItems.findIndex(x => x.id === action.payload.id);
 

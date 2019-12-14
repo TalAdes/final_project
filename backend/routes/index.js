@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const rsa = require('Node-RSA')
-const nodemailer = require('nodemailer');
-const crypto = require('crypto');
 const stripe = require("stripe")('sk_test_DKK9B8vDDO2VjewUYB7pkuUt00R6nEVqP0');
 const uuid = require("uuid/v4");
+const nodemailer = require('nodemailer');
+const rsa = require('Node-RSA')
+const crypto = require('crypto');
+
+
+// const io = require('../app');
 
 
 /* setting DB path  */
