@@ -199,7 +199,7 @@ class ConnectedAddNewFlower extends Component {
             onClick={() => {
               const formData = new FormData()
 
-              // fill foemData with the image
+              // fill formData with the image
               for (var key of this.state.image.entries()){
                 formData.append('file',key[1])
               }
@@ -210,7 +210,10 @@ class ConnectedAddNewFlower extends Component {
               data['price']=this.state.price      
               data['color']=this.state.color      
               data['quantity']=this.state.quantity   
-              data['hot']=this.state.hot        
+              if(this.state.hot === 'yes')
+                data['hot']='true'        
+              if(this.state.hot === 'no')
+                data['hot']='false'        
               data['description']=this.state.description
               data['image_url']=this.state.image_url
               data['status']='not deleted'
@@ -226,7 +229,12 @@ class ConnectedAddNewFlower extends Component {
               else data['category']= 'other flowers'
               
 
-              Auth.addFlower(data , flower => {
+              for (key in data){
+                formData.append(key, data[key]);
+                console.log(data[key])
+              }
+
+              Auth.addFlower(formData , flower => {
                 flower = flower.data
                 // registeration failed.
                 if (flower.isRegisteredSuccesfully) {

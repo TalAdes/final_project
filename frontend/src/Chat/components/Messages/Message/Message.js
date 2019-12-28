@@ -1,4 +1,3 @@
-
 import './Message.css';
 import React, { useState} from "react";
 import like from '../../../icons/like.png';
@@ -10,7 +9,7 @@ const Message = ({ message: { text, user }, name }) => {
   const [likeCounter, setlikeCounter] = useState(0);
   const [unlikeCounter, setunlikeCounter] = useState(0);
   let isSentByCurrentUser = false;
-
+  
   const trimmedName = name.trim().toLowerCase();
 
   if(user === trimmedName) {
@@ -25,14 +24,7 @@ const Message = ({ message: { text, user }, name }) => {
           <div className="messageBox backgroundBlue">
             <p className="messageText colorWhite">{ReactEmoji.emojify(text)}</p>
           </div>
-          <div onClick={() => setunlikeCounter(unlikeCounter + 1)} key={name} className="activeItem">
-                    {unlikeCounter}
-                    <img alt="Online Icon" src={like}/>
-          </div>
-          <div onClick={() => setlikeCounter(likeCounter + 1)} key={name} className="activeItem">
-                    {likeCounter}
-                    <img alt="Online Icon" src={thumbdown}/>
-          </div>
+          
         </div>
         )
         : (
@@ -47,3 +39,16 @@ const Message = ({ message: { text, user }, name }) => {
 }
 
 export default Message;
+
+
+{/* 
+  <div onClick={() => setunlikeCounter(unlikeCounter + 1)} key={name} className="activeItem">
+    {unlikeCounter}
+    <img alt="Online Icon" src={like}/>
+  </div>
+  <div onClick={() => setlikeCounter(likeCounter + 1)} key={name} className="activeItem">
+    {likeCounter}
+    <img alt="Online Icon" src={thumbdown}/>
+  </div> 
+*/}
+          

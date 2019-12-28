@@ -251,6 +251,7 @@ class ConnectedHeader extends Component {
               >
                 My area
               </MenuItem>
+              
               <MenuItem
                 onClick={() => {
                       alert('now we supose to move to Blog')
@@ -259,11 +260,9 @@ class ConnectedHeader extends Component {
               >
                 Blog
               </MenuItem>
-            
               <MenuItem
                 onClick={() => {
-                  alert('now we supose to move to Chat')
-                  //push...
+                  this.props.history.push("/chat");
                 }}
               >
                 Chat

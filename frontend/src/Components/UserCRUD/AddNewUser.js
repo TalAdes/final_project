@@ -132,7 +132,7 @@ class ConnectedAddNewUser extends Component {
               
               const formData = new FormData()
 
-              // fill foemData with the image
+              // fill formData with the image
               for (var key of this.state.image.entries()){
                 formData.append('file',key[1])
               }

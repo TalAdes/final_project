@@ -1,0 +1,17 @@
+.login-container {
+    height:100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.image-part {
+    display: flex;
+    width: fit-content;
+}
+
+.image-url-part {
+    width: 3px;
+    display: flex;
+    flex: -1;
+    align-items: center;
+}

@@ -21,6 +21,8 @@ import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
 import Footer from "./Components/Footer/Footer";
 import Chat from './Chat/components/Chat/Chat';
 import Join from './Chat/components/Join/Join';
+import ChatList from './Chat/components/ChatList/ChatList';
+import CreateNewChat from './Chat/components/CreateNewChat/CreateNewChat';
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import {
@@ -77,10 +79,12 @@ class App extends Component {
               <CartDialog />
               {/* changing container */}
               <Switch>
+                <Route path="/chat" exact component={ChatList} />
                 <Route path="/chat/chat" component={Chat} />
                 <Route path="/chat/join" component={Join} />
                 <Route path="/search/" component={ProductList} />
                 <Route path="/" exact component={ProductList} />
+                <Route path="/CreateNewChat" exact component={CreateNewChat} />
                 <Route path="/AddNewUser" exact component={AddNewUser} />
                 <Route path="/AddNewFlower" exact component={AddNewFlower} />
                 <Route path="/user_CRUD" exact component={UserCRUD} />

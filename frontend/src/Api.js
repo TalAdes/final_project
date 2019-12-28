@@ -74,6 +74,7 @@ const Api = {
       setTimeout(async () => {
         let res = await this.getFlowersData()
         let data = res.data
+        data = data.filter(item => item.hot === 'true')
         data = data.filter(item => {
           if (
             usePriceFilter &&

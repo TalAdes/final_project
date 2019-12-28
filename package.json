@@ -1,0 +1,14 @@
+{
+  "name": "lab5",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "server": "nodemon --inspect-brk ./backend/app.js",
+    "client": "npm start --prefix ./frontend",
+    "full_stack": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "dependencies": {
+    "concurrently": "^5.0.1",
+    "nodemon": "^2.0.2"
+  }
+}

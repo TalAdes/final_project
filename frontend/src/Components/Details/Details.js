@@ -132,7 +132,7 @@ class ConnectedDetails extends Component {
             <div style={{ fontSize: 18, marginTop: 10 }}>
               Price: {this.state.item.price} $
             </div>
-            {this.state.item.hot && (
+            {this.state.item.hot === 'true' && (
               <span style={{ color: "#1a9349", marginTop: 5, fontSize: 14 }}>
                 hot product
               </span>

@@ -28,6 +28,11 @@ const Chat = (props) => {
 
     socket = io(ENDPOINT);
 
+      // socket = io(ENDPOINT,{
+      //   transports: ['websocket']
+      //   });
+  
+
     setRoom(room);
     setName(name)
     if(name && room){
@@ -51,12 +56,7 @@ const Chat = (props) => {
     socket.on('roomData', ({ users }) => {
       setUsers(users);
     })
-
-    return () => {
-      socket.emit('disconnect');
-
-      socket.off();
-    }
+    
   }, [messages])
 
   const sendMessage = (event) => {
@@ -70,7 +70,8 @@ const Chat = (props) => {
   return (
     <div className="outerContainer">
       <div className="container">
-          <InfoBar room={room} />
+          {/* <InfoBar props = {props} room={room} /> */}
+          <InfoBar props = {props} room={room} />
           <Messages messages={messages} name={name} />
           <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
       </div>

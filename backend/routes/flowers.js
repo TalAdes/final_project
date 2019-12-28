@@ -34,10 +34,10 @@ const FlowerModel = require('../models/flowers');
 				// maybe i should check also about req.files.upfile, but i dont think it necessary
 				if (req.files) {
 					console.log("try to upload file");
-					var file = req.files.add_flower_files_name, name = file.name;
+					var file = req.files.file, name = file.name;
 					uploadpath = root + 'public/images/flowers/' + name;
 					file.mv(uploadpath, function (err) {
-						data ['src'] = "images/" + name;
+						data ['src'] = "images/flowers/" + name;
 						if (err) {
 							console.log("File Upload Failed", name, err);
 							res.send("Error Occured!, image issue")
@@ -52,11 +52,12 @@ const FlowerModel = require('../models/flowers');
 				}
 				else {
 					console.log("try to upload url");
-					dest = root + 'public/images/';
+					// i think that we can delete next line
+					dest = root + 'public/images/flowers/';
 					if (req.body.image_url != "") {
-						var _data = { url: req.body.image_url, dest: root + 'public/images/' }
+						var _data = { url: req.body.image_url, dest: root + 'public/images/flowers/' }
 						download.image(_data).then(({ filename }) => {
-							data ['src'] = "images/" + filename.substring(filename.lastIndexOf("\\") + 1, filename.length);
+							data ['src'] = "images/flowers/" + filename.substring(filename.lastIndexOf("\\") + 1, filename.length);
 							saveFlower(res, data);
 							return;
 							}).catch(() => {
@@ -113,6 +114,9 @@ const FlowerModel = require('../models/flowers');
 
 function saveFlower(res,data) {
 
+	if(data.hot === 'yes'){
+		data['hot'] = true
+	}
 	FlowerModel.insertMany({ 	
 							name: data.name, 
 							price: data.price, 
