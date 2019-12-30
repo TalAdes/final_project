@@ -105,7 +105,9 @@ class ConnectedLogin extends Component {
             }}
           />
           
-          <ReCaptcha
+
+
+          {window.grecaptcha ? (<ReCaptcha
             style={{ marginTop: 10 }}
             ref={(el) => {this.captchaVerify = el;}}
             size="normal"
@@ -114,8 +116,10 @@ class ConnectedLogin extends Component {
             sitekey="6LecVsQUAAAAACLHjV6xn_JgA6Tvon_mFXADdSeD"
             onloadCallback={this.onLoadRecaptcha}
             verifyCallback={this.verifyCallback}
-          />
+          />) : (null)}
           
+
+
           <Button
             style={{ marginTop: 10 }}
             disabled={  !this.state.userName.toString().replace(/\s/g, '').length ||

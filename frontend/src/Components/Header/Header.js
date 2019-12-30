@@ -270,6 +270,14 @@ class ConnectedHeader extends Component {
             
               <MenuItem
                 onClick={() => {
+                  this.props.history.push("/ChatManagement");
+                }}
+              >
+                Chat Managment
+              </MenuItem>
+                
+              <MenuItem
+                onClick={() => {
                   Auth.signout(problem => {
                     if(problem)
                       alert(problem)

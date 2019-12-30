@@ -82,6 +82,134 @@ const Auth = {
         
     },
             
+    acceptChat(id, cb) {
+        axios({
+                method: 'post',
+                url: '/chat_back/acceptChat',
+                data: {id:id},
+            })
+        .then((res) => cb(res))
+        .catch(err =>  {
+            console.log(err)
+            cb({data : {
+                'isConfirmedSuccesfully':false,
+                'message' : 'there is problem in our servers please try later'
+            }})
+        })
+    },
+    
+    denyChat(id, cb) {
+        axios({
+            method: 'post',
+            url: '/chat_back/denyChat',
+            data: {id:id},
+        })
+        .then((res) => cb(res))
+        .catch(err =>  {
+            console.log(err)
+            cb({data : {
+                'isDenyedSuccesfully':false,
+                'message' : 'there is problem in our servers please try later'
+            }})
+        })
+    },
+    
+    deleteChat(id, cb) {
+        axios({
+            method: 'post',
+            url: '/chat_back/deleteChat',
+            data: {id:id},
+        })
+        .then((res) => cb(res))
+        .catch(err =>  {
+            console.log(err)
+            cb({data : {
+                'isDeletedSuccesfully':false,
+                'message' : 'there is problem in our servers please try later'
+            }})
+        })
+    },
+
+    deleteUser(userName,chatID, cb) {
+        axios({
+            method: 'post',
+            url: '/chat_back/deleteUser',
+            data: {userName,chatID},
+        })
+        .then((res) => cb(res))
+        .catch(err =>  {
+            console.log(err)
+            cb({data : {
+                'isDeletedSuccesfully':false,
+                'message' : 'there is problem in our servers please try later'
+            }})
+        })
+    },
+
+    leaveChat(id, cb) {
+        axios({
+            method: 'post',
+            url: '/chat_back/leaveChat',
+            data: {id:id},
+        })
+        .then((res) => cb(res))
+        .catch(err =>  {
+            console.log(err)
+            cb({data : {
+                'isLeavedSuccesfully':false,
+                'message' : 'there is problem in our servers please try later'
+            }})
+        })
+    },
+    
+    joinChat(id, cb) {
+        axios({
+            method: 'post',
+            url: '/chat_back/joinChat',
+            data: {id:id},
+        })
+        .then((res) => cb(res))
+        .catch(err =>  {
+            console.log(err)
+            cb({data : {
+                'isJoinedSuccesfully':false,
+                'message' : 'there is problem in our servers please try later'
+            }})
+        })
+    },
+    
+    joinToCloseChat(id, token, cb) {
+        axios({
+            method: 'post',
+            url: '/chat_back/joinToCloseChat',
+            data: {id,token},
+        })
+        .then((res) => cb(res))
+        .catch(err =>  {
+            console.log(err)
+            cb({data : {
+                'isJoinedSuccesfully':false,
+                'message' : 'there is problem in our servers please try later'
+            }})
+        })
+    },
+
+    sendRequestToJoinChat(id, cb) {
+        axios({
+            method: 'post',
+            url: '/chat_back/sendRequestToJoinChat',
+            data: {id:id},
+        })
+        .then((res) => cb(res))
+        .catch(err =>  {
+            console.log(err)
+            cb({data : {
+                'isRequestSentSuccesfully':false,
+                'message' : 'there is problem in our servers please try later'
+            }})
+        })
+    },    
+
     authenticate(name, pass, cb) {
 
     var data = {name,'password' : pass}

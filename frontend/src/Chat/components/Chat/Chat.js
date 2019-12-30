@@ -46,7 +46,7 @@ const Chat = (props) => {
     }
 
 
-  }, [ENDPOINT, props.location.search]);
+  }, [ENDPOINT, props.location.search,props.history]);
 
   useEffect(() => {
     socket.on('message', (message) => {

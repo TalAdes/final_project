@@ -8,9 +8,40 @@ let messageSchema = new mongoose.Schema({
   text : String
 })
 
-let tinyUserSchema = new mongoose.Schema({
-  name: String
+let flowerSchema = new mongoose.Schema({
+  name: String,
+  description: String,
+  color: String,
+  category: String,
+  status: String,
+  imageUrls: String,
+  id: Number,
+  price: String,
+  src : String,
+  hot : String,
+  quantity : Number
 })
+
+let userSchema = new mongoose.Schema({
+  name: {
+    type:String,
+    required:true,
+},
+  pwd: {
+    type: String,
+    required: true,
+},
+  role: String,
+  id: Number,
+  status: String,
+  resetPasswordToken: String,
+  resetPasswordExpires: String,
+  email: String,
+  cartItems: [flowerSchema],
+  src : String,
+  date: Date
+})
+
 
 let chatSchema = new mongoose.Schema({
   id: Number,
@@ -19,9 +50,12 @@ let chatSchema = new mongoose.Schema({
   adminName: String,
   adminEmail: String,
   adminPhone: String,
+  isPrivate: String,
+  isOpen: String,
+  generatedToken: String,
   status: String,
   history:[messageSchema],
-  users:[tinyUserSchema]
+  users:[userSchema]
 })
 
 module.exports = mongoose.model('Chats', chatSchema)

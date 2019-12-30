@@ -24,6 +24,7 @@ class CreateNewChat extends Component {
     adminName          : "",
     adminPhone          : "",
     adminEmail          : "",
+    chatType          : "",
     
     image         : [],
     image_url     : "",
@@ -137,12 +138,24 @@ class CreateNewChat extends Component {
             }}
           />
 
+          <TextField
+            label="Chat Type(open/close/private)"
+            value={this.state.chatType}
+            onChange={e => {
+              this.setState({ chatType: e.target.value });
+            }}
+          />
+
           <Button
             disabled={
               this.state.invalidEmail ||
               this.state.invalidPhoneNumber ||
               !this.state.chatName.toString().replace(/\s/g, '').length ||
               !this.state.adminEmail.toString().replace(/\s/g, '').length ||
+              !this.state.chatType.toString().replace(/\s/g, '').length ||
+              (this.state.chatType!== 'open' &&
+              this.state.chatType!== 'close' &&
+              this.state.chatType!== 'private' ) ||
               !this.state.adminName.toString().replace(/\s/g, '').length ||
               !this.state.adminPhone.toString().replace(/\s/g, '').length
             }
@@ -158,6 +171,19 @@ class CreateNewChat extends Component {
 
               var data = {}
 
+              if(this.state.chatType === 'open'){
+                data['isOpen']='yes' 
+                data['isPrivate']='no' 
+              }
+              if(this.state.chatType === 'close'){
+                data['isOpen']='no' 
+                data['isPrivate']='no' 
+              }
+              if(this.state.chatType === 'private'){
+                data['isOpen']='no' 
+                data['isPrivate']='yes' 
+              }
+
               data['chatName']=this.state.chatName       
               data['adminEmail']=this.state.adminEmail      
               data['adminPhone']=this.state.adminPhone      
@@ -166,6 +192,7 @@ class CreateNewChat extends Component {
               if(this.props.loggedInUserRole !== 'admin'){
                 data['status']="unconfirmed"
               }
+              else data['status']="confirmed"
 
               // לזכור שתריך לשנות לפורם דאטה משום שרק כך אפשר לקלוח תמונה
               Auth.createChat(data , chat => {

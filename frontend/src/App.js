@@ -23,6 +23,9 @@ import Chat from './Chat/components/Chat/Chat';
 import Join from './Chat/components/Join/Join';
 import ChatList from './Chat/components/ChatList/ChatList';
 import CreateNewChat from './Chat/components/CreateNewChat/CreateNewChat';
+import ChatManagement from './Chat/components/ChatManagement/ChatManagement';
+import NewOpenChatRequests from './Chat/components/NewOpenChatRequests/NewOpenChatRequests';
+import ShowChatMemberList from './Chat/components/ShowChatMemberList/ShowChatMemberList';
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import {
@@ -85,6 +88,9 @@ class App extends Component {
                 <Route path="/search/" component={ProductList} />
                 <Route path="/" exact component={ProductList} />
                 <Route path="/CreateNewChat" exact component={CreateNewChat} />
+                <Route path="/ChatManagement" exact component={ChatManagement} />
+                <Route path="/ShowChatMemberList/:id" exact component={ShowChatMemberList} />
+                <Route path="/new_open_chat_requests" exact component={NewOpenChatRequests} />
                 <Route path="/AddNewUser" exact component={AddNewUser} />
                 <Route path="/AddNewFlower" exact component={AddNewFlower} />
                 <Route path="/user_CRUD" exact component={UserCRUD} />
