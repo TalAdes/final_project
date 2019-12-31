@@ -10,6 +10,7 @@ export const SET_LOGGED_IN_USER = "SET_LOGGED_IN_USER";
 export const SET_LOGGED_IN_USER_EMAIL = "SET_LOGGED_IN_USER_EMAIL";
 export const SET_LOGGED_IN_USER_ROLE = "SET_LOGGED_IN_USER_ROLE";
 export const SET_MENU_STATUS = "SET_MENU_STATUS";
+export const SET_ROOM_ID = "SET_ROOM_ID";
 export const store = "store";
 export const managment = "managment";
 export const my_area = "my_area";

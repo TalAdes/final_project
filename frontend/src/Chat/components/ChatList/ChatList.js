@@ -5,6 +5,7 @@ import './ChatList.css';
 import Button from "@material-ui/core/Button";
 import Api from "../../../Api";
 import Auth from "../../../Auth";
+import { setRoomID } from "../../../Redux/Actions";
 
 
 const mapStateToProps = state => {
@@ -148,7 +149,10 @@ const ChatList = (props) => {
               {chatsList.map(item => (
                 <tr key={item.id} >
                   <td>{item.name}</td>
-                  <td><button type="submit" onClick={()=> props.history.push("/")}>Enter Chat</button></td>
+                  <td><button type="submit" onClick={()=> {
+                    props.dispatch(setRoomID( item.id ));
+                    props.history.push("/chat/chat");
+                    }}>Enter Chat</button></td>
                   <td><button type="submit" onClick={()=>{ leaveChat(props,item.id); setForceReload(Date.now())}}>Leave Chat</button></td>
                 </tr>
               ))}

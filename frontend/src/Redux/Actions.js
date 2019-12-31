@@ -16,6 +16,10 @@ export const updateCartItemQnt = obj => ({
 
 
 
+export const setRoomID = id => ({
+  type: CONSTANTS.SET_ROOM_ID,
+  payload: id
+});
 export const setCheckedOutItems = items => ({
   type: CONSTANTS.SET_CHECKEDOUT_ITEMS,
   payload: items

@@ -1,18 +1,25 @@
 import './Message.css';
-import React, { useState} from "react";
-import like from '../../../icons/like.png';
-import thumbdown from '../../../icons/thumb-down.png';
+import React from "react";
+// import like from '../../../icons/like.png';
+// import thumbdown from '../../../icons/thumb-down.png';
 
 import ReactEmoji from 'react-emoji';
 
-const Message = ({ message: { text, user }, name }) => {
-  const [likeCounter, setlikeCounter] = useState(0);
-  const [unlikeCounter, setunlikeCounter] = useState(0);
-  let isSentByCurrentUser = false;
+const Message = ({message, sender, userName}) => {
+  console.log('********************************i am in message');
   
-  const trimmedName = name.trim().toLowerCase();
+  console.log('message');
+  console.log(message);
+  
+  console.log('sender');
+  console.log(sender);
+  
+  console.log('userName');
+  console.log(userName);
+  
+  let isSentByCurrentUser = false;
 
-  if(user === trimmedName) {
+  if(sender === userName) {
     isSentByCurrentUser = true;
   }
 
@@ -20,19 +27,20 @@ const Message = ({ message: { text, user }, name }) => {
     isSentByCurrentUser
       ? (
         <div className="messageContainer justifyEnd">
-          <p className="sentText pr-10">{trimmedName}</p>
+          <p className="sentText pr-10">{userName}</p>
           <div className="messageBox backgroundBlue">
-            <p className="messageText colorWhite">{ReactEmoji.emojify(text)}</p>
+            <p className="messageText colorWhite">{ReactEmoji.emojify(message)}</p>
           </div>
-          
+
         </div>
         )
-        : (
+        :
+        (
           <div className="messageContainer justifyStart">
             <div className="messageBox backgroundLight">
-              <p className="messageText colorDark">{ReactEmoji.emojify(text)}</p>
+              <p className="messageText colorDark">{ReactEmoji.emojify(message)}</p>
             </div>
-            <p className="sentText pl-10 ">{user}</p>
+            <p className="sentText pl-10 ">{sender}</p>
           </div>
         )
   );
@@ -41,7 +49,10 @@ const Message = ({ message: { text, user }, name }) => {
 export default Message;
 
 
-{/* 
+{/*
+  const [likeCounter, setlikeCounter] = useState(0);
+  const [unlikeCounter, setunlikeCounter] = useState(0);
+
   <div onClick={() => setunlikeCounter(unlikeCounter + 1)} key={name} className="activeItem">
     {unlikeCounter}
     <img alt="Online Icon" src={like}/>
@@ -49,6 +60,5 @@ export default Message;
   <div onClick={() => setlikeCounter(likeCounter + 1)} key={name} className="activeItem">
     {likeCounter}
     <img alt="Online Icon" src={thumbdown}/>
-  </div> 
+  </div>
 */}
-          

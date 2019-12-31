@@ -8,6 +8,7 @@ const initialState = {
   showUserMenu: false,
   checkedOutItems: [],
   loggedInUser: null,
+  roomID: null,
   loggedInUserRole: null,
   menuStatus:CONSTANTS.store // store/my area/managment
 };
@@ -37,6 +38,15 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         cartItems: state.cartItems.filter(x => x.id !== action.payload)
     };
+    
+    case CONSTANTS.SET_ROOM_ID:
+      return {
+        ...state,
+        roomID: action.payload
+    };
+    
+    
+    
     case CONSTANTS.UPDATE_CART_ITEM_QUANTITY: {
       let index = state.cartItems.findIndex(x => x.id === action.payload.id);
 

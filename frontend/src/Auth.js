@@ -162,6 +162,22 @@ const Auth = {
         })
     },
     
+    amIHaveRoomPermissions(roomID, cb) {
+        axios({
+            method: 'post',
+            url: '/chat_back/amIHaveRoomPermissions',
+            data: {roomID},
+        })
+        .then((res) => cb(res))
+        .catch(err =>  {
+            console.log(err)
+            cb({data : {
+                'havePermission':false,
+                'message' : 'there is problem in our servers please try later'
+            }})
+        })
+    },
+    
     joinChat(id, cb) {
         axios({
             method: 'post',

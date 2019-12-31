@@ -16,7 +16,6 @@ const Api = {
   menuData                              : () =>       axios.get('/menuData'),
   menuWarehouseData                     : () =>       axios.get('/menuWarehouseData'),
   filterData                            : () =>       axios.get('/filterData'),
-  sampleProductsAxios                   : () =>       axios.get('/sampleProductsAxios'),
   
   chatsList                             : () =>       axios.get('/chat_back/chatsList'),
   otherChatsList                        : () =>       axios.get('/chat_back/otherChatsList'),

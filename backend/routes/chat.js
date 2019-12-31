@@ -354,6 +354,28 @@ router.post('/getChatByID', function (req, res) {
 
 })
 
+//i need this in order to check if subscriber enter to chat with permission
+router.post('/amIHaveRoomPermissions', function (req, res) {
+
+    var user = req.user
+    if (!user) {
+        res.json({'havePermission':false, 'message' : 'You are not sigend to this chat'})
+    } else {
+        
+    }
+    var roomID = req.body.roomID
+    ChatModel.findOne({id:roomID})
+    .then(data => {
+        if (data.users.some(someUser => someUser.name === user.name)) {
+            res.json({'havePermission':true, 'message' : 'You are alllow to enter this chat'})
+        } else {
+            res.json({'havePermission':false, 'message' : 'You are not sigend to this chat'})
+        }
+    })
+    .catch(() => res.json({'isAccesingSuccesfully':false, 'message' : 'There is an error please tell the IT guy\nin amIHaveRoomPermissions'}))
+
+})
+
 
 
 module.exports = router;

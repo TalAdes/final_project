@@ -99,9 +99,13 @@ io.on('connect', (socket) => {
 
     socket.join(user.room);
 
+    //sent that only the socket owner see
     socket.emit('message', { user: 'admin', text: `${user.name}, welcome to room ${user.room}.`});
+    
+    //sent that only the socket owner don't see
     socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined!` });
-
+    
+    //broadcast to everyone in the room
     io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
 
     callback();
@@ -110,12 +114,16 @@ io.on('connect', (socket) => {
   socket.on('sendMessage', (message, callback) => {
     const user = getUser(socket.id);
 
+    //broadcast to everyone in the room
+    //i need to check if this is really what happen:
+    //when i send the message it is not appear on the chat till i get event from server
     io.to(user.room).emit('message', { user: user.name, text: message });
 
     callback();
   });
 
   socket.on('disconnect', (reason) => {
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>disconected because of '+reason);
     const user = removeUser(socket.id);
 
     if(user) {
