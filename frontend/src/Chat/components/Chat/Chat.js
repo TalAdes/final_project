@@ -70,7 +70,6 @@ const Chat = (props) => {
   return (
     <div className="outerContainer">
       <div className="container">
-          {/* <InfoBar props = {props} room={room} /> */}
           <InfoBar props = {props} room={room} />
           <Messages messages={messages} name={name} />
           <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />

@@ -80,20 +80,15 @@ const ChatList = (props) => {
   const [token, setToken] = useState("");
   
   useEffect(() => {
-    if(props.loggedInUserRole === 'admin'){
-      props.history.push("/new_open_chat_requests");
-    }
-    else{
-      Api.chatsList().then(data =>{
-        setChatsList(data.data)
-      })
-      Api.otherChatsList().then(data =>{
-        setAvailableChatsList(data.data)
-      })
-      Api.otherChatsWithPasswordList().then(data =>{
-        setAvailableChatsWithPasswordList(data.data)
-      })
-    }
+    Api.chatsList().then(data =>{
+      setChatsList(data.data)
+    })
+    Api.otherChatsList().then(data =>{
+      setAvailableChatsList(data.data)
+    })
+    Api.otherChatsWithPasswordList().then(data =>{
+      setAvailableChatsWithPasswordList(data.data)
+    })
   },[props.history,props.loggedInUserRole,forceReload])
 
 

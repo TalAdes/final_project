@@ -13,7 +13,6 @@ function accept(props,id) {
     chat = chat.data
     if (chat.isConfirmedSuccesfully) {
         alert(chat.message)
-        props.history.push("/chat");
     } 
     else {
       alert(chat.message)
@@ -28,7 +27,6 @@ function deny(props,id) {
     chat = chat.data
     if (chat.isDenyedSuccesfully) {
         alert(chat.message)
-        props.history.push("/chat");
     } 
     else {
       alert(chat.message)
@@ -43,7 +41,6 @@ function deleteChat(props,id) {
     chat = chat.data
     if (chat.isDeletedSuccesfully) {
         alert(chat.message)
-        props.history.push("/chat");
     } 
     else {
       alert(chat.message)
@@ -55,6 +52,7 @@ function deleteChat(props,id) {
 const NewOpenChatRequests = (props) => {
   const [chatsList, setChatsList] = useState([]);
   const [existingChatsList, setExistingChatsList] = useState([]);
+  const [forceReload, setForceReload] = useState([]);
 
 
   useEffect(() => {
@@ -64,7 +62,7 @@ const NewOpenChatRequests = (props) => {
     Api.existingChatRoomsList().then(data =>{
       setExistingChatsList(data.data)
     })
-  },[])
+  },[forceReload])
 
 
 return(
@@ -95,8 +93,8 @@ return(
               {chatsList.map(item => (
                 <tr key={item.id} >
                   <td>{item.name}</td>
-                  <td><button type="submit" onClick={()=> accept(props,item.id)}>Accept</button></td>
-                  <td><button type="submit" onClick={()=> deny(props,item.id)}>Deny</button></td>
+                  <td><button type="submit" onClick={()=> { accept(props,item.id); setForceReload(Date.now())}}>Accept</button></td>
+                  <td><button type="submit" onClick={()=> { deny(props,item.id); setForceReload(Date.now())}}>Deny</button></td>
                 </tr>
               ))}
           </tbody>
@@ -129,7 +127,7 @@ return(
                 <tr key={item.id} >
                   <td>{item.name}</td>
                   <td><button type="submit" onClick={()=> props.history.push("/ShowChatMemberList/"+ item.id)}>Show members</button></td>
-                  <td><button type="submit" onClick={()=> deleteChat(props,item.id)}>Delete</button></td>
+                  <td><button type="submit" onClick={()=> { deleteChat(props,item.id); setForceReload(Date.now())}}>Delete</button></td>
                 </tr>
               ))}
           </tbody>
