@@ -34,7 +34,7 @@ class UserDetails extends Component {
       invalidEmail: false,
       name :"",
       email : "",
-      lastOrders : []
+      lastOrders : null
     };
   }
 
@@ -229,7 +229,14 @@ class UserDetails extends Component {
             
         {/* every that i will put down will be in right */}
 
-        {this.state.lastOrders.data !== 'this budyy is not subscriber' && this.state.lastOrders.data ?
+        {
+          this.state.lastOrders === null?
+          (
+            <CircularProgress className="circular" />
+          )
+          :
+          (
+this.state.lastOrders.data !== 'this budyy is not subscriber' && this.state.lastOrders.data ?
         (<Table style={{ width: 460 , marginLeft: 30}}>
           <TableHead>
             <TableRow>
@@ -275,7 +282,10 @@ class UserDetails extends Component {
             })}
             </TableBody>
         </Table>
-        ):(null)}
+        ):(null)
+          )
+        }
+        
 
         
       </div>

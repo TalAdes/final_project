@@ -49,7 +49,9 @@ function onListening() {
 
 
 //maybe i can delete this {useNewUrlParser: true}
-mongoose.connect('mongodb://localhost/mongoose_try', {useNewUrlParser: true});
+
+mongoose.connect('mongodb+srv://tadestades:tadestades@cluster0-hekkm.mongodb.net/mern_proj', {useNewUrlParser: true});
+// mongoose.connect('mongodb://localhost/mongoose_try', {useNewUrlParser: true});
 //maybe i can delete this line
 mongoose.set('useFindAndModify', false);
 
@@ -176,6 +178,8 @@ io.on('connect', (socket) => {
   socket.on('i want more', async (counter,callback) => {
     socket.emit('reset');
     const user = getUser(socket.id);
+    socket.emit('message', { user: 'admin', text: `${user.name}, welcome to room ${user.room}.`});
+    await sleep(200)
     var chat = await ChatModel.findOne({id:user.room});
     let index = chat.history.length - 20*counter.counter
     if (index < 0) {
