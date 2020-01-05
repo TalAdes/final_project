@@ -112,7 +112,7 @@ router.get('/otherChatsList', function (req, res) {
     var user = req.user
     ChatModel.find()
     .then(data => data.filter(item => item.status === 'confirmed'))
-    .then(data => data.filter(item => item.isPrivate === 'no'))
+    .then(data => data.filter(item => item.isOpen === 'yes'))
     .then(data => data.filter(item => !item.users.some(x => x.name === user.name)))
     .then(chats => res.send(chats))
 
@@ -123,7 +123,7 @@ router.get('/otherChatsWithPasswordList', function (req, res) {
     var user = req.user
     ChatModel.find()
     .then(data => data.filter(item => item.status === 'confirmed'))
-    .then(data => data.filter(item => item.isPrivate === 'yes'))
+    .then(data => data.filter(item => item.isOpen === 'no'))
     .then(data => data.filter(item => !item.users.some(x => x.name === user.name)))
     .then(chats => res.send(chats))
 
@@ -150,7 +150,7 @@ router.post('/sendRequestToJoinChat', async function (req, res) {
 
     var user = req.user
     var id = req.body.id
-    var chat = await ChatModel.find({id})[0];
+    var chat = await ChatModel.findOne({id});
 
     const transporter = nodemailer.createTransport({
 		service: 'gmail',
@@ -171,7 +171,7 @@ router.post('/sendRequestToJoinChat', async function (req, res) {
         transporter.sendMail(mailOptions, (err, response) => {
             if (err) {
                 console.error('there was an error: ', err);
-                res.json({'isJoinedSuccesfully':false, 'message' : 'You are already in sined to this chat,\nplease refresh the browser'})
+                res.json({'isJoinedSuccesfully':false, 'message' : 'the mail didn\'t send,\nplease try later'})
             } else {
                 res.json({'isJoinedSuccesfully':true, 'message' : 'You succesfuly joined to the chat'})
             }
@@ -213,8 +213,7 @@ router.post('/joinToCloseChat', function (req, res) {
     var id = req.body.id
     var token = req.body.token
     var user = req.user
-    ChatModel.find({id})
-    .then(data => data[0])//data[0] because, find return array of chats and i want only the first
+    ChatModel.findOne({id})
     .then( (chat) => {
     var index = chat.users.findIndex(x => x.name === user.name)
     if(index !== -1){
@@ -228,13 +227,12 @@ router.post('/joinToCloseChat', function (req, res) {
         return
     }
     else{
-        if (chat.generatedToken !== token) {
+        if (chat.password !== token) {
             res.json({'isJoinedSuccesfully':false, 'message' : 'You have wrong token'})        
             return
         }
         //so you want to join
-        ChatModel.find({id})
-        .then(data => data[0])
+        ChatModel.findOne({id})
         .then(data => ChatModel.findOneAndUpdate({id},{'users': [...data.users,user]}))
         .then(()=>res.json({'isJoinedSuccesfully':true, 'message' : 'You succesfuly joined to the chat'}))
         .catch(()=>res.json({'isJoinedSuccesfully':false, 'message' : 'You are already in sined to this chat,\nplease refresh the browser'}))

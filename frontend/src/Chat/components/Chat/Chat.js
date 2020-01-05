@@ -28,6 +28,7 @@ const Chat = (props) => {
   const [users, setUsers] = useState('');
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
+  const [counter, setCounter] = useState(1);
   // const ENDPOINT = 'https://project-chat-application.herokuapp.com/';
   const ENDPOINT = '/';
 
@@ -35,6 +36,7 @@ const Chat = (props) => {
 
   //this function verify if you have permission to enter this chat or not
   useEffect(() => {
+    console.log('amIHaveRoomPermissions is called');
     Auth.amIHaveRoomPermissions(props.roomID , permission => {
       permission = permission.data
       if (!permission.havePermission) {
@@ -49,41 +51,73 @@ const Chat = (props) => {
 
     //emitting to server that this guy enter to chat room
     socket.emit('join', { name, room }, (error) => {
+    console.log('join was emitted');
+
       if(error) {
         alert(error);
       }
     });
   }, [ENDPOINT, props.location.search,props.history,name,room,props.roomID]);
 
+
   useEffect(() => {
 //message hs this structure: message = {text,sender}
     socket.on('message', (message) => {
       setMessages([...messages, message ]);
+      console.log(`client - got message event
+      \nmessage :${message.text}`);
     });
+
+    // socket.on('retrieveMessages', (_messages) => {
+    //   console.log('client - got retrive history event');
+    //   _messages.messages.forEach(element => {
+    //     setTimeout(async function(){ 
+    //       setMessages([...messages, element ]);
+    //     }, 3000);
+    //   });
+    // });
+
+      // for (let index = 0; index < _messages.messages.length; index++) {
+      //   console.log('retrive history '+ _messages.messages[index].text);
+      //   setMessages([...messages, _messages.messages[index] ]);
+      // }
+
+
 
     socket.on('roomData', ({ users }) => {
       setUsers(users);
     })
+
+    socket.on('reset', () => {
+      setMessages([]);
+    })
+
+
+    return () => {
+      socket.emit('disconnect');
+
+      socket.off();
+    }
+
 // i think that we dont need <[messages]> beacause this is the only place which messages can be changed
-  }, [messages])
+  },[messages])
 
-  const sendMessage = (event) => {
+  const _sendMessage = (event) => {
     event.preventDefault();
-
+    console.log('_sendMessage');
     if(message) {
+      console.log('_sendMessage for real');
       socket.emit('sendMessage', message, () => setMessage(''));
-      console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>socket<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
-      console.log(socket.id);
     }
   }
 
-  
+
   return (
     <div className="outerContainer">
       <div className="container">
           <InfoBar props = {props} room={room}/>
-          <Messages messages={messages} name={name} />
-          <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
+          <Messages socket={socket} counter={counter} setCounter={setCounter} messages={messages} name={name} />
+          <Input message={message} setMessage={setMessage} sendMessage={_sendMessage} />
       </div>
       <TextContainer users={users}/>
     </div>

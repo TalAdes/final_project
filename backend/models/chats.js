@@ -2,7 +2,7 @@ let mongoose = require('mongoose')
 
 let messageSchema = new mongoose.Schema({
   date: String,
-  sender: String,
+  user: String,
   like: String,
   dislike: String,
   text : String
@@ -52,7 +52,7 @@ let chatSchema = new mongoose.Schema({
   adminPhone: String,
   isPrivate: String,
   isOpen: String,
-  generatedToken: String,
+  password: String,
   status: String,
   history:[messageSchema],
   users:[userSchema]

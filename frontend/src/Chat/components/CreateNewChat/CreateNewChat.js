@@ -25,10 +25,12 @@ class CreateNewChat extends Component {
     adminPhone          : "",
     adminEmail          : "",
     chatType          : "",
+    password          : "",
     
     image         : [],
     image_url     : "",
     
+    invalidPassword   : "",
     invalidPhoneNumber   : "",
     invalidEmail   : ""
   };
@@ -142,13 +144,29 @@ class CreateNewChat extends Component {
             label="Chat Type(open/close/private)"
             value={this.state.chatType}
             onChange={e => {
+              if(e.target.value === 'close'){
+                if (this.state.password.toString().replace(/\s/g, '').length) {
+                  this.setState({ invalidPassword: false });
+                } else {
+                  this.setState({ invalidPassword: true });
+                }
+              }
               this.setState({ chatType: e.target.value });
+            }}
+          />
+
+          <TextField
+            label="Password (only for close chats)"
+            value={this.state.password}
+            onChange={e => {
+              this.setState({ password: e.target.value });
             }}
           />
 
           <Button
             disabled={
               this.state.invalidEmail ||
+              this.state.invalidPassword ||
               this.state.invalidPhoneNumber ||
               !this.state.chatName.toString().replace(/\s/g, '').length ||
               !this.state.adminEmail.toString().replace(/\s/g, '').length ||

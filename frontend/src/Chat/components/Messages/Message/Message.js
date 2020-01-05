@@ -5,21 +5,21 @@ import React from "react";
 
 import ReactEmoji from 'react-emoji';
 
-const Message = ({message, sender, userName}) => {
-  console.log('********************************i am in message');
+const Message = ({message: { text, user }, userName}) => {
+  // console.log('********************************i am in message');
   
-  console.log('message');
-  console.log(message);
+  // console.log('message');
+  // console.log(message);
   
-  console.log('sender');
-  console.log(sender);
+  // console.log('sender');
+  // console.log(sender);
   
-  console.log('userName');
-  console.log(userName);
+  // console.log('userName');
+  // console.log(userName);
   
   let isSentByCurrentUser = false;
 
-  if(sender === userName) {
+  if(user === userName) {
     isSentByCurrentUser = true;
   }
 
@@ -29,7 +29,7 @@ const Message = ({message, sender, userName}) => {
         <div className="messageContainer justifyEnd">
           <p className="sentText pr-10">{userName}</p>
           <div className="messageBox backgroundBlue">
-            <p className="messageText colorWhite">{ReactEmoji.emojify(message)}</p>
+            <p className="messageText colorWhite">{ReactEmoji.emojify(text)}</p>
           </div>
 
         </div>
@@ -38,9 +38,9 @@ const Message = ({message, sender, userName}) => {
         (
           <div className="messageContainer justifyStart">
             <div className="messageBox backgroundLight">
-              <p className="messageText colorDark">{ReactEmoji.emojify(message)}</p>
+              <p className="messageText colorDark">{ReactEmoji.emojify(text)}</p>
             </div>
-            <p className="sentText pl-10 ">{sender}</p>
+            <p className="sentText pl-10 ">{user}</p>
           </div>
         )
   );

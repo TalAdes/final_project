@@ -19,6 +19,7 @@ const UserModel = require('./models/users');
 const socketio = require('socket.io');
 const { addUser, removeUser, getUser, getUsersInRoom } = require('./chat/users');
 require('dotenv').config();
+const ChatModel = require('./models/chats');
 
 var debug = require('debug')('lab5:server');
 var http = require('http');
@@ -90,35 +91,74 @@ passport.use(UserModel.createStrategy());
 passport.serializeUser(UserModel.serializeUser());
 passport.deserializeUser(UserModel.deserializeUser());
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+};
 
 io.on('connect', (socket) => {
-  socket.on('join', ({ name, room }, callback) => {
+  socket.on('join', async ({ name, room }, callback) => {
     const { error, user } = addUser({ id: socket.id, name, room });
 
     if(error) return callback(error);
 
     socket.join(user.room);
-
+    
     //sent that only the socket owner see
     socket.emit('message', { user: 'admin', text: `${user.name}, welcome to room ${user.room}.`});
-    
-    //sent that only the socket owner don't see
-    socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined!` });
-    
+    console.log('server - sending `welcome to room` message event');
+    await sleep(200)
+    //retrieve messages
+    // setTimeout(async function(){ 
+    //   var chat = await ChatModel.findOne({id:user.room});
+    //   socket.emit('message',{messages : chat.history} ); 
+    // }, 500);
+
     //broadcast to everyone in the room
     io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
+    console.log('server - sending `roomData` message event');
 
+
+    var chat = await ChatModel.findOne({id:user.room});
+    let index = chat.history.length - 20
+    if (index < 0) {
+      index = 0
+    }
+    for ( ; index < chat.history.length; index++) {
+      var message = chat.history[index];
+      console.log(`the message is ${message.text}`);
+      socket.emit('message',message );
+      await sleep(200)
+    }
+    
+    // chat.history.forEach(message => {
+    //   sleep(10000).then(() => {
+    //     console.log(`the message is ${message.text}`);
+    //     socket.emit('message',message )
+    //   }
+    //   )
+    // });
+
+
+    //sent that only the socket owner don't see
+    socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined!` });
+    console.log('server - sending `has joined!` message event');
+    
+    
     callback();
   });
 
-  socket.on('sendMessage', (message, callback) => {
+  socket.on('sendMessage', async (message, callback) => {
     const user = getUser(socket.id);
+    console.log('server - got send message event');
 
     //broadcast to everyone in the room
     //i need to check if this is really what happen:
     //when i send the message it is not appear on the chat till i get event from server
+    console.log('server - sending message event');
     io.to(user.room).emit('message', { user: user.name, text: message });
-
+    var chat = await ChatModel.findOne({id:user.room})
+    var newHistory = [...chat.history,{text:message,user:user.name}]
+    await ChatModel.findOneAndUpdate({id:user.room},{history : newHistory})
     callback();
   });
 
@@ -127,10 +167,29 @@ io.on('connect', (socket) => {
     const user = removeUser(socket.id);
 
     if(user) {
+      console.log('i am emiting because some one disconnected');
       io.to(user.room).emit('message', { user: 'Admin', text: `${user.name} has left.` });
       io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room)});
     }
   })
+
+  socket.on('i want more', async (counter,callback) => {
+    socket.emit('reset');
+    const user = getUser(socket.id);
+    var chat = await ChatModel.findOne({id:user.room});
+    let index = chat.history.length - 20*counter.counter
+    if (index < 0) {
+      index = 0
+    }
+    for ( ; index < chat.history.length; index++) {
+      var message = chat.history[index];
+      console.log(`the message is ${message.text}`);
+      socket.emit('message',message );
+      await sleep(200)
+    }
+    callback();
+  })
+
 });
 
 
