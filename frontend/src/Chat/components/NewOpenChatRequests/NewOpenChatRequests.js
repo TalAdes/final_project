@@ -2,13 +2,12 @@ import React, { useState ,useEffect} from 'react';
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import './NewOpenChatRequests.css';
-import Button from "@material-ui/core/Button";
 import Auth from "../../../Auth";
 import Api from "../../../Api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 
-function accept(props,id) {
+function accept(id) {
 
   Auth.acceptChat(id , chat => {
     chat = chat.data
@@ -22,7 +21,7 @@ function accept(props,id) {
 
 }
 
-function deny(props,id) {
+function deny(id) {
   
   Auth.denyChat(id , chat => {
     chat = chat.data
@@ -36,7 +35,7 @@ function deny(props,id) {
 
 }
 
-function deleteChat(props,id) {
+function deleteChat(id) {
   
   Auth.deleteChat(id , chat => {
     chat = chat.data
@@ -102,8 +101,8 @@ return(
               {chatsList.map(item => (
                 <tr key={item.id} >
                   <td>{item.name}</td>
-                  <td><button type="submit" onClick={()=> { accept(props,item.id); setForceReload(Date.now())}}>Accept</button></td>
-                  <td><button type="submit" onClick={()=> { deny(props,item.id); setForceReload(Date.now())}}>Deny</button></td>
+                  <td><button type="submit" onClick={()=> { accept(item.id); setInitialLoad(0);setForceReload(Date.now())}}>Accept</button></td>
+                  <td><button type="submit" onClick={()=> { deny(item.id); setInitialLoad(0); setForceReload(Date.now())}}>Deny</button></td>
                 </tr>
               ))}
           </tbody>
@@ -137,7 +136,7 @@ return(
                 <tr key={item.id} >
                   <td>{item.name}</td>
                   <td><button type="submit" onClick={()=> props.history.push("/ShowChatMemberList/"+ item.id)}>Show members</button></td>
-                  <td><button type="submit" onClick={()=> { deleteChat(props,item.id); setForceReload(Date.now())}}>Delete</button></td>
+                  <td><button type="submit" onClick={()=> { deleteChat(item.id); setInitialLoad(0);setForceReload(Date.now())}}>Delete</button></td>
                 </tr>
               ))}
           </tbody>

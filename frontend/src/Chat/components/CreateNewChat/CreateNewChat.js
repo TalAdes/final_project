@@ -30,7 +30,7 @@ class CreateNewChat extends Component {
     image         : [],
     image_url     : "",
     
-    invalidPassword   : "",
+    invalidPassword   : false ,
     invalidPhoneNumber   : "",
     invalidEmail   : ""
   };
@@ -58,8 +58,8 @@ class CreateNewChat extends Component {
       <div className="login-container">
         <div
           style={{
-            height: 200,
-            width: 200,
+            height: 400,
+            width: 240,
             display: "flex",
             flexDirection: "column"
           }}
@@ -141,7 +141,7 @@ class CreateNewChat extends Component {
           />
 
           <TextField
-            label="Chat Type(open/close/private)"
+            label="Chat Type(open/close)"
             value={this.state.chatType}
             onChange={e => {
               if(e.target.value === 'close'){
@@ -151,6 +151,9 @@ class CreateNewChat extends Component {
                   this.setState({ invalidPassword: true });
                 }
               }
+              else{
+                this.setState({ invalidPassword: false });
+              }
               this.setState({ chatType: e.target.value });
             }}
           />
@@ -159,6 +162,11 @@ class CreateNewChat extends Component {
             label="Password (only for close chats)"
             value={this.state.password}
             onChange={e => {
+              if (e.target.value.toString().replace(/\s/g, '').length) {
+                this.setState({ invalidPassword: false });
+              } else {
+                this.setState({ invalidPassword: true });
+              }
               this.setState({ password: e.target.value });
             }}
           />
@@ -172,8 +180,7 @@ class CreateNewChat extends Component {
               !this.state.adminEmail.toString().replace(/\s/g, '').length ||
               !this.state.chatType.toString().replace(/\s/g, '').length ||
               (this.state.chatType!== 'open' &&
-              this.state.chatType!== 'close' &&
-              this.state.chatType!== 'private' ) ||
+              this.state.chatType!== 'close' ) ||
               !this.state.adminName.toString().replace(/\s/g, '').length ||
               !this.state.adminPhone.toString().replace(/\s/g, '').length
             }
@@ -191,18 +198,14 @@ class CreateNewChat extends Component {
 
               if(this.state.chatType === 'open'){
                 data['isOpen']='yes' 
-                data['isPrivate']='no' 
               }
               if(this.state.chatType === 'close'){
                 data['isOpen']='no' 
-                data['isPrivate']='no' 
               }
-              if(this.state.chatType === 'private'){
-                data['isOpen']='no' 
-                data['isPrivate']='yes' 
-              }
+              
 
               data['chatName']=this.state.chatName       
+              data['password']=this.state.password       
               data['adminEmail']=this.state.adminEmail      
               data['adminPhone']=this.state.adminPhone      
               data['adminName']=this.state.adminName   

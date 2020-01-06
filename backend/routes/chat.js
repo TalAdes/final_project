@@ -8,15 +8,17 @@ const FlowerModel = require('../models/flowers');
 const UserModel = require('../models/users');
 const ChatModel = require('../models/chats');
 
-function saveChat(res,data) {
+function saveChat(req,res,data) {
 
 	if(data.hot === 'yes'){
 		data['hot'] = true
-	}
+    }
+    var users = [req.user]
 	ChatModel.insertMany({ 	
         id: data.id,
         src: data.src,
-        chatName: data.chatName, 
+        name: data.chatName, 
+        password:  data.password,
         adminName:  data.adminName,
         adminEmail: data.adminEmail,
         adminPhone: data.adminPhone,
@@ -24,11 +26,24 @@ function saveChat(res,data) {
         isPrivate: data.isPrivate,
         status: data.status,
         history:[],
-        users:[]	
-    }).then(() => res.json({
+        users:users	
+    }).then(() => {
+        if (req.user.role === 'admin') {
+            res.json({
+                'isRegisteredSuccesfully':true,
+                'error' : 'The was opend succesfully'
+            })            
+        } else {
+            res.json({
+                'isRegisteredSuccesfully':true,
+                'error' : 'The request was written in our system'
+            })   
+        }
+        res.json({
         'isRegisteredSuccesfully':true,
         'error' : 'The request was written in our system'
-    })).catch(() => res.json({
+        })
+    }).catch(() => res.json({
         'isRegisteredSuccesfully':false,
         'error' : 'there is problem in our DB servers please try later'
     }))
@@ -69,7 +84,7 @@ router.post('/createNewChat', function (req, res) {
                     }
                     else {
                         console.log("File Uploaded", name);
-                        saveChat(res, data);
+                        saveChat(req,res, data);
                         return;
                     }
                 });
@@ -81,14 +96,14 @@ router.post('/createNewChat', function (req, res) {
                     var _data = { url: req.body.image_url, dest: root + 'public/images/chats/' }
                     download.image(_data).then(({ filename }) => {
                         data ['src'] = "images/chats/" + filename.substring(filename.lastIndexOf("\\") + 1, filename.length);
-                        saveChat(res, data);
+                        saveChat(req,res, data);
                         return;
                         }).catch(() => {
                         res.send("Error Occured!, image issue")
                         return ;
                     });
                 }
-                else saveChat(res, data);
+                else saveChat(req,res, data);
             }
         };
     });
@@ -171,7 +186,7 @@ router.post('/sendRequestToJoinChat', async function (req, res) {
                 console.error('there was an error: ', err);
                 res.json({'isJoinedSuccesfully':false, 'message' : 'the mail didn\'t send,\nplease try later'})
             } else {
-                res.json({'isJoinedSuccesfully':true, 'message' : 'You succesfuly joined to the chat'})
+                res.json({'isJoinedSuccesfully':true, 'message' : 'You request was sent to the admin'})
             }
         })
 

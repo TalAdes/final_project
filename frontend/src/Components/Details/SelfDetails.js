@@ -88,8 +88,8 @@ class UserDetails extends Component {
         {/* img */}
         <div
           style={{
-            width: 100,
-            height: 180,
+            width: 200,
+            height: 270,
             paddingTop: 5,
             paddingBottom: 5,
             paddingLeft: 40,

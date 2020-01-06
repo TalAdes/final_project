@@ -26,14 +26,14 @@ function deleteUser(props,userName,chatID) {
 
 
 const ShowChatMemberList = (props) => {
-  const [membersList, setMemberList] = useState(null);
+  const [membersList, setMembersList] = useState(null);
   const [chat, setChat] = useState({name:""});
   const [forceReload, setForceReload] = useState([]);
 
 
   useEffect(() => {
     Api.showChatMemberList(props.match.params.id).then(data =>{
-      setMemberList(data.data)
+      setMembersList(data.data)
     })
     Api.getChatByID(props.match.params.id).then(data =>{
       setChat(data.data[0])
@@ -81,7 +81,7 @@ return(
                   <tr key={item.id} >
                     <td>{item.name}</td>
                     
-                    <td><button type="submit" onClick={()=> { deleteUser(props,item.name,chat.id); setForceReload(Date.now())}}>Delete</button></td>
+                    <td><button type="submit" onClick={()=> { deleteUser(props,item.name,chat.id); setMembersList(null);setForceReload(Date.now())}}>Delete</button></td>
                   </tr>
                 ))}
             </tbody>

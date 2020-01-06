@@ -19,7 +19,7 @@ const mapStateToProps = state => {
 
 function leaveChat(props,id) {
   
-  Auth.leaveChat(id , chat => {
+  return Auth.leaveChat(id , chat => {
     chat = chat.data
     if (chat.isLeavedSuccesfully) {
         alert(chat.message)
@@ -32,9 +32,9 @@ function leaveChat(props,id) {
 
 }
 
-function joinChat(props,id) {
+async function joinChat(props,id) {
   
-  Auth.joinChat(id , chat => {
+  return Auth.joinChat(id , chat => {
     chat = chat.data
     if (chat.isJoinedSuccesfully) {
         alert(chat.message)
@@ -46,9 +46,9 @@ function joinChat(props,id) {
 
 }
 
-function joinToCloseChat(props,id,token) {
+async function joinToCloseChat(props,id,token) {
   
-  Auth.joinToCloseChat(id , token, chat => {
+  return Auth.joinToCloseChat(id , token, chat => {
     chat = chat.data
     if (chat.isJoinedSuccesfully) {
         alert(chat.message)
@@ -62,7 +62,7 @@ function joinToCloseChat(props,id,token) {
 
 function sendRequestToJoinChat(props,id) {
   
-  Auth.sendRequestToJoinChat(id , chat => {
+  return Auth.sendRequestToJoinChat(id , chat => {
     chat = chat.data
     if (chat.isJoinedSuccesfully) {
         alert(chat.message)
@@ -79,10 +79,12 @@ const ChatList = (props) => {
   const [availableChatsList, setAvailableChatsList] = useState(null);
   const [availableChatsWithPasswordList, setAvailableChatsWithPasswordList] = useState(null);
   const [forceReload, setForceReload] = useState(null);
+  const [refresh, setRefresh] = useState(null);
   const [initialLoad, setInitialLoad] = useState(0);
   const [token, setToken] = useState("");
   
   useEffect(() => {
+      console.log(`initial load: ${initialLoad}`);
     Api.chatsList().then(data =>{
       setChatsList(data.data)
       setInitialLoad(ps => ps+1)
@@ -97,12 +99,16 @@ const ChatList = (props) => {
     })
   },[props.history,props.loggedInUserRole,forceReload])
 
+  useEffect(()=>{
+    setInitialLoad(0)
+  },[refresh])
 
 
   return (
     <div>
 
     {
+      // (initialLoad === 0 || initialLoad % 3 !== 0) ?
       initialLoad !== 3 ?
       (
         <CircularProgress className="circular" />
@@ -166,7 +172,11 @@ const ChatList = (props) => {
                       props.dispatch(setRoomID( item.id ));
                       props.history.push("/chat/chat");
                       }}>Enter Chat</button></td>
-                    <td><button type="submit" onClick={()=>{ leaveChat(props,item.id); setForceReload(Date.now())}}>Leave Chat</button></td>
+                    <td><button type="submit" onClick={()=>{ leaveChat(props,item.id)
+                        .then(()=>{
+                          setInitialLoad(0)
+                          setForceReload(Date.now())
+                        })}}>Leave Chat</button></td>
                   </tr>
                 ))}
               </tbody>
@@ -195,7 +205,11 @@ const ChatList = (props) => {
                 {availableChatsList.map(item => 
                   (<tr key={item.id} >
                   <td>{item.name}</td>
-                  <td><button type="submit" onClick={()=>{ joinChat(props,item.id); setForceReload(Date.now())}}>Join Chat</button></td>
+                  <td><button type="submit" onClick={()=>{ joinChat(props,item.id)
+                        .then(()=>{
+                          setInitialLoad(0)
+                          setForceReload(Date.now())
+                        })}}>Join Chat</button></td>
                   </tr>)
                 )}
               </tbody>
@@ -226,10 +240,18 @@ const ChatList = (props) => {
                 <td>{item.name}</td>
                   <div>
                     <td>
-                      <button type="submit" onClick={()=>{ joinToCloseChat(props,item.id,token); setForceReload(Date.now())}}>Join Chat</button>
+                      <button type="submit" onClick={()=>{ joinToCloseChat(props,item.id,token)
+                        .then(()=>{
+                          setInitialLoad(0)
+                          setForceReload(Date.now())
+                        })}}>Join Chat</button>
                       <input type="text" placeholder='if you have token write it' onChange={e => setToken(e.target.value)} />
                     </td>
-                    <td><button type="submit" onClick={()=>{ sendRequestToJoinChat(props,item.id)}}>Send Request To Chat Admin</button></td>
+                    <td><button type="submit" onClick={()=>{ setRefresh(Date.now());sendRequestToJoinChat(props,item.id)
+                        .then(()=>{
+                          setInitialLoad(0)
+                          setForceReload(Date.now())
+                        })}}>Send Request To Chat Admin</button></td>
                   </div>
                 </tr>)
               )}

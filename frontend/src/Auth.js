@@ -147,7 +147,7 @@ const Auth = {
     },
 
     leaveChat(id, cb) {
-        axios({
+        return axios({
             method: 'post',
             url: '/chat_back/leaveChat',
             data: {id:id},
@@ -179,7 +179,7 @@ const Auth = {
     },
     
     joinChat(id, cb) {
-        axios({
+        return axios({
             method: 'post',
             url: '/chat_back/joinChat',
             data: {id:id},
@@ -195,7 +195,7 @@ const Auth = {
     },
     
     joinToCloseChat(id, token, cb) {
-        axios({
+        return axios({
             method: 'post',
             url: '/chat_back/joinToCloseChat',
             data: {id,token},
@@ -211,7 +211,7 @@ const Auth = {
     },
 
     sendRequestToJoinChat(id, cb) {
-        axios({
+        return axios({
             method: 'post',
             url: '/chat_back/sendRequestToJoinChat',
             data: {id:id},
