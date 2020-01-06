@@ -236,50 +236,24 @@ class UserDetails extends Component {
           :
           (
             this.state.lastOrders.data !== 'i am not subscriber' && this.state.lastOrders.data ?
-        (<Table style={{ width: 460 , marginLeft: 30}}>
-          <TableHead>
-            <TableRow>
-              <TableCell>Item(s) name(s)</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Date</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {this.state.lastOrders.data.map((item, index) => {
-              return (
-                <TableRow key={item.id}>
-                  <TableCell>
-                    <TextField
-                      disabled='true'
-                      type="text"
-                      style={{ width: 200 }}
-                      multiline
-                      value={item.description}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <TextField
-                      type="text"
-                      disabled='true'
-                      style={{ width: 60 }}
-                      multiline
-                      value={item.amount}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <TextField
-                      type="text"
-                      disabled='true'
-                      style={{ width: 200 }}
-                      multiline
-                      value={item.date}
-                    />
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-            </TableBody>
-        </Table>
+        (<table className="table table-striped table-hover">
+        <thead>
+          <tr>
+            <td>Item(s) name(s)</td>
+            <td>Price</td>
+            <td>Date</td>
+          </tr>
+        </thead>
+        <tbody>
+          {this.state.lastOrders.data.map((item) => (
+            <tr key={item.id} >
+              <td>{item.description}</td>
+              <td>{item.amount/100}</td>
+              <td>{item.date.substring(11, 19) + "," + item.date.substring(0, 10)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
         ):(null)
           )
         }

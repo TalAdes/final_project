@@ -5,6 +5,7 @@ import './NewOpenChatRequests.css';
 import Button from "@material-ui/core/Button";
 import Auth from "../../../Auth";
 import Api from "../../../Api";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 
 function accept(props,id) {
@@ -50,46 +51,54 @@ function deleteChat(props,id) {
 }
 
 const NewOpenChatRequests = (props) => {
-  const [chatsList, setChatsList] = useState([]);
+  const [chatsList, setChatsList] = useState(null);
   const [existingChatsList, setExistingChatsList] = useState([]);
+  const [initialLoad, setInitialLoad] = useState(0);
   const [forceReload, setForceReload] = useState([]);
 
 
   useEffect(() => {
     Api.newOpenChatRequestsList().then(data =>{
+      setInitialLoad(ps => ps+1)
       setChatsList(data.data)
     })
     Api.existingChatRoomsList().then(data =>{
+      setInitialLoad(ps => ps+1)
       setExistingChatsList(data.data)
     })
   },[forceReload])
 
 
 return(
-  <div>
+ <div>
+
+  { 
+  initialLoad !== 2 ?
+      (
+        <CircularProgress className="circular" />
+      ) 
+  :
+ ( <div>
 
     <div className="table-wrapper">
       <div className="product-list-header">
         <div className="online-shop-title" style={{ flexGrow: 1 }}>
         New Open Chat Requests
         </div>
-        <Button
-            style={{ marginLeft: 20 }}
-            variant="outlined"
-            // onClick={() => {
-            // props.history.push("/CreateNewChat");
-            // }}
-          >
-            כפתור שלא עושה כלום
-        </Button>
       </div>
       <table className="table table-striped table-hover">
-        <thead>
-          <tr key='first table tile'>
-            <td><span style={{ fontWeight: 'bold' }}> chat name </span></td>
-          </tr>
-        </thead>
-        <tbody>
+        {chatsList.length === 0 ?
+        (
+          <p> there are not any new chat requests yet... </p>
+        )
+        :
+        (<div>
+          <thead>
+            <tr key='first table tile'>
+              <td><span style={{ fontWeight: 'bold' }}> chat name </span></td>
+            </tr>
+          </thead>
+          <tbody>
               {chatsList.map(item => (
                 <tr key={item.id} >
                   <td>{item.name}</td>
@@ -98,6 +107,7 @@ return(
                 </tr>
               ))}
           </tbody>
+        </div>)}
       </table>
     </div>
 
@@ -106,23 +116,23 @@ return(
         <div className="online-shop-title" style={{ flexGrow: 1 }}>
         Existing chats
         </div>
-        <Button
-            style={{ marginLeft: 20 }}
-            variant="outlined"
-            // onClick={() => {
-            // props.history.push("/CreateNewChat");
-            // }}
-          >
-            כפתור שלא עושה כלום
-        </Button>
       </div>
       <table className="table table-striped table-hover">
-        <thead>
-          <tr key='second table tile'>
-            <td><span style={{ fontWeight: 'bold' }}> chat name </span></td>
-          </tr>
-        </thead>
-        <tbody>
+        
+        {
+          existingChatsList.length === 0?
+          (
+            <p> there are not chats yet... </p>
+          )
+          :
+        (
+        <div>
+          <thead>
+            <tr key='second table tile'>
+              <td><span style={{ fontWeight: 'bold' }}> chat name </span></td>
+            </tr>
+          </thead>
+          <tbody>
               {existingChatsList.map(item => (
                 <tr key={item.id} >
                   <td>{item.name}</td>
@@ -131,10 +141,15 @@ return(
                 </tr>
               ))}
           </tbody>
+        </div>
+        )
+      }
       </table>
     </div>
 
-  </div>
+  </div>)
+}
+</div>
 
 )};
   

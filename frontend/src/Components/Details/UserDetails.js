@@ -11,11 +11,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import isEmail from 'validator/lib/isEmail';
 import { withRouter } from "react-router-dom";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
 
 const mapStateToProps = state => {
   return {   
@@ -89,8 +84,6 @@ class UserDetails extends Component {
         {/* img */}
         <div
           style={{
-            width: 100,
-            height: 180,
             paddingTop: 5,
             paddingBottom: 5,
             paddingLeft: 40,
@@ -101,7 +94,6 @@ class UserDetails extends Component {
         >
         <img
           alt=""
-          style={ { height: '100%', width: '100%'}}
           src={"/" + this.state.item.src}
         />  
         </div>
@@ -236,54 +228,27 @@ class UserDetails extends Component {
           )
           :
           (
-this.state.lastOrders.data !== 'this budyy is not subscriber' && this.state.lastOrders.data ?
-        (<Table style={{ width: 460 , marginLeft: 30}}>
-          <TableHead>
-            <TableRow>
-              <TableCell>Item(s) name(s)</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Date</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {console.log(this.state.lastOrders.data)}
-            {this.state.lastOrders.data.map((item, index) => {
-              return (
-                <TableRow key={item.id}>
-                  <TableCell>
-                    <TextField
-                      disabled='true'
-                      type="text"
-                      style={{ width: 200 }}
-                      multiline
-                      value={item.description}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <TextField
-                      type="text"
-                      disabled='true'
-                      style={{ width: 60 }}
-                      multiline
-                      value={item.amount}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <TextField
-                      type="text"
-                      disabled='true'
-                      style={{ width: 200 }}
-                      multiline
-                      value={item.date}
-                    />
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-            </TableBody>
-        </Table>
-        ):(null)
-          )
+          this.state.lastOrders.data !== 'this budyy is not subscriber' && this.state.lastOrders.data ?
+          (<table className="table table-striped table-hover">
+            <thead>
+              <tr>
+                <td>Item(s) name(s)</td>
+                <td>Price</td>
+                <td>Date</td>
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.lastOrders.data.map((item) => (
+                <tr key={item.id} >
+                  <td>{item.description}</td>
+                  <td>{item.amount/100}</td>
+                  <td>{item.date.substring(11, 19) + "," + item.date.substring(0, 10)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          ):(null)
+            )
         }
         
 
@@ -385,50 +350,24 @@ this.state.lastOrders.data !== 'this budyy is not subscriber' && this.state.last
         
 
       {this.state.lastOrders.data !== 'this budyy is not subscriber' && this.state.lastOrders.data ?
-        (<Table style={{ width: 460 , marginLeft: 30}}>
-          <TableHead>
-            <TableRow>
-              <TableCell>Item(s) name(s)</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Date</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {this.state.lastOrders.data.map((item, index) => {
-              return (
-                <TableRow key={item.id}>
-                  <TableCell>
-                    <TextField
-                      disabled='true'
-                      type="text"
-                      style={{ width: 200 }}
-                      multiline
-                      value={item.description}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <TextField
-                      type="text"
-                      disabled='true'
-                      style={{ width: 60 }}
-                      multiline
-                      value={item.amount}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <TextField
-                      type="text"
-                      disabled='true'
-                      style={{ width: 200 }}
-                      multiline
-                      value={item.date}
-                    />
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-            </TableBody>
-        </Table>
+        (<table className="table table-striped table-hover">
+        <thead>
+          <tr>
+            <td>Item(s) name(s)</td>
+            <td>Price</td>
+            <td>Date</td>
+          </tr>
+        </thead>
+        <tbody>
+          {this.state.lastOrders.data.map((item) => (
+            <tr key={item.id} >
+              <td>{item.description}</td>
+              <td>{item.amount/100}</td>
+              <td>{item.date.substring(11, 19) + "," + item.date.substring(0, 10)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
         ):(null)}
         
       </div>

@@ -5,6 +5,7 @@ import './ChatManagement.css';
 import Button from "@material-ui/core/Button";
 import Api from "../../../Api";
 import Auth from "../../../Auth";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 
 const mapStateToProps = state => {
@@ -36,7 +37,7 @@ function deleteChat(props,id) {
 
 
 const ChatList = (props) => {
-  const [chatsList, setChatsList] = useState([]);
+  const [chatsList, setChatsList] = useState(null);
   const [forceReload] = useState("");
   
   useEffect(() => {
@@ -53,7 +54,13 @@ const ChatList = (props) => {
 
 
   return (
-        <div className="table-wrapper">
+      <div>
+
+    {chatsList === null ?
+    (      <CircularProgress className="circular" />
+    )
+    :
+      (        <div className="table-wrapper">
           <div className="product-list-header">
             <div className="online-shop-title" style={{ flexGrow: 1 }}>
               chats list
@@ -91,6 +98,9 @@ const ChatList = (props) => {
           }
         </table>
         </div>
+)}
+</div>
+
 )};
   
 export default withRouter(connect(mapStateToProps)(ChatList));

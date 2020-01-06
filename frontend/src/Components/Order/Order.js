@@ -55,10 +55,10 @@ class ConnectedOrder extends Component {
     const { status } = response.data;
     console.log("Response:", response.data);
     if (status === "success") {
+      toast("Success! Check email for details", { type: "success" });
       this.props.dispatch(setCheckedOutItems([]));
       this.props.dispatch(setCartItems([]));
       Api.setCartItemsMongoDB([])
-      toast("Success! Check email for details", { type: "success" });
     } else {
       toast("Something went wrong", { type: "error" });
     }

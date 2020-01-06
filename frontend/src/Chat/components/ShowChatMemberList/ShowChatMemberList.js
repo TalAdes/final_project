@@ -5,6 +5,7 @@ import './ShowChatMemberList.css';
 import Button from "@material-ui/core/Button";
 import Api from "../../../Api";
 import Auth from "../../../Auth";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 
 
@@ -25,7 +26,7 @@ function deleteUser(props,userName,chatID) {
 
 
 const ShowChatMemberList = (props) => {
-  const [membersList, setMemberList] = useState([]);
+  const [membersList, setMemberList] = useState(null);
   const [chat, setChat] = useState({name:""});
   const [forceReload, setForceReload] = useState([]);
 
@@ -44,7 +45,12 @@ return(
   <div>
 
   {
-    membersList.length === 0 && chat !== undefined?
+    membersList === null ?
+    (
+      <CircularProgress className="circular" />
+    )
+    :
+    (membersList.length === 0 && chat !== undefined?
     (<h1> this chat is empty </h1>) :
   
     (<div>
@@ -84,7 +90,7 @@ return(
 
       
     </div>
-    )
+    ))
   
   }
   </div>

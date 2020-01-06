@@ -156,7 +156,7 @@ router.post("/checkout", async (req, res) => {
 			//   to: `${process.env.email_user_name_target}`,
 			subject: 'Thank you, this is your receipt',
 			text:
-				`you succesfuly purchased: ${charge.description}  and paied for it: ${charge.amount} usd\n,yours ${product.name}`,
+				`you succesfuly purchased: ${charge.description}  and paied for it: ${charge.amount/100} usd\n,yours ${product.name}`,
 		};
 		transporter.sendMail(mailOptions, (err, response) => {
 		if (err) {
