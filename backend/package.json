@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "_start": "node --inspect ./bin/www",
+    "start": "node ./bin/www",
     "server": "nodemon --inspect-brk ./app.js",
     "client": "npm start --prefix ../frontend",
     "_full_stack": "concurrently \"npm run _start\" \"npm run client\"",
