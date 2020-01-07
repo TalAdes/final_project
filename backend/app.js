@@ -76,8 +76,8 @@ app.use(
     secret: 'secret',
     resave: false,
     saveUninitialized: false,
-    // cookie: {maxAge: 1000*60, httpOnly: true} ,
-    cookie: {maxAge: parseInt(process.env.PASSPORT_MAX_AGE), httpOnly: false}, //half an hour
+    cookie: {maxAge: 1000*60, httpOnly: true} ,
+    // cookie: {maxAge: parseInt(process.env.PASSPORT_MAX_AGE), httpOnly: false}, //half an hour
     rolling : true
     // cookie: {maxAge: 1000*60*15, httpOnly: true} 
     //milisoconds*seconds*minutes

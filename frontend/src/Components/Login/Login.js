@@ -124,7 +124,7 @@ class ConnectedLogin extends Component {
             style={{ marginTop: 10 }}
             disabled={  !this.state.userName.toString().replace(/\s/g, '').length ||
                         !this.state.pass.toString().replace(/\s/g, '').length
-                        // !this.state.captcha
+                        !this.state.captcha
                       }
             variant="outlined"
             color="primary"

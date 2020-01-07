@@ -553,6 +553,11 @@ router.get('/who_is_loged', function (req, res) {
 	res.send('no one')
 })
 
+router.get("/", (req, res) => {
+	res.send({ response: "Server is up and running." }).status(200);
+});
+
+
 // module.exports = {sk, router};
 module.exports = router;
 module.exports.key = key;
