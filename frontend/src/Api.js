@@ -35,14 +35,11 @@ const Api = {
   updateCartItemQntMongoDB              : (data) =>  axios.post('/cart/updateCartItemQntMongoDB',data),
   setCartItemsMongoDB                   : (empty_arry) =>       axios.post('/cart/setCartItemsMongoDB',{empty_arry}),
   getItemUsingID(id) {
-    return new Promise((resolve, reject) => {
-      setTimeout(async () => {
-        let res = await this.getFlowersData()
-        let data = res.data
-        data = data.filter(x => x.id === parseInt(id, 10));
-        resolve(data.length === 0 ? null : data[0]);
-      }, 500);
-    });
+    return this.getFlowersData().then(res =>{
+      let data = res.data
+      data = data.filter(x => x.id === parseInt(id, 10));
+      return (data.length === 0 ? null : data[0]);
+    })
   },
 
   _sortData(data, sortval) {
@@ -68,7 +65,6 @@ const Api = {
     term,
     sortValue,
     itemsPerPage,
-    hot,
     usePriceFilter,
     minPrice,
     maxPrice,
@@ -81,7 +77,6 @@ const Api = {
       setTimeout(async () => {
         let res = await this.getFlowersData()
         let data = res.data
-        data = data.filter(item => item.hot === 'true')
         data = data.filter(item => {
           if (
             usePriceFilter &&

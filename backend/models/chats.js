@@ -18,7 +18,7 @@ let flowerSchema = new mongoose.Schema({
   id: Number,
   price: String,
   src : String,
-  hot : String,
+  hot : Boolean,
   quantity : Number
 })
 

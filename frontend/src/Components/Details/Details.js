@@ -28,7 +28,6 @@ class ConnectedDetails extends Component {
     this.isCompMounted = false;
 
     this.state = {
-      relatedItems: [],
       quantity: "1",
       item: {quantity : 2},
       unfinishedTasks: 0
@@ -39,24 +38,16 @@ class ConnectedDetails extends Component {
     this.setState(ps => ({ unfinishedTasks: ps.unfinishedTasks + 1 }));
 
     // First, let's get the item, details of which we want to show.
-    let item = await Api.getItemUsingID(id);
-
-    // Now, get items from same category.
-    let relatedItems = await Api.searchItems({
-      category: item.category,
-      page: "1",
-      itemsPerPage: "5"
-    });
-
-    if (this.isCompMounted) {
-      this.setState(ps => {
-        return {
-          item,
-          unfinishedTasks: ps.unfinishedTasks - 1,
-          relatedItems: relatedItems.data.filter(x => x.id !== item.id)
-        };
-      });
-    }
+    Api.getItemUsingID(id).then(item =>{
+      if (this.isCompMounted) {
+        this.setState(ps => {
+          return {
+            item,
+            unfinishedTasks: ps.unfinishedTasks - 1,
+          };
+        });
+      }
+    })
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -132,7 +123,7 @@ class ConnectedDetails extends Component {
             <div style={{ fontSize: 18, marginTop: 10 }}>
               Price: {this.state.item.price} $
             </div>
-            {this.state.item.hot === 'true' && (
+            {this.state.item.hot === true && (
               <span style={{ color: "#1a9349", marginTop: 5, fontSize: 14 }}>
                 hot product
               </span>

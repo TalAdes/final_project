@@ -83,8 +83,8 @@ class FlowerDetails extends Component {
           {/* img */}
           <div
             style={{
-              width: 100,
-              height: 180,
+              width: 290,
+              height: 290,
               paddingTop: 5,
               paddingBottom: 5,
               paddingLeft: 40,

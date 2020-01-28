@@ -44,7 +44,7 @@ class ConnectedItem extends Component {
             </div>
             <div style={{ margin: 5 }}>Price: {this.props.item.price} $</div>
             <div style={{ color: "#1a9349", fontWeight: "bold", margin: 5 }}>
-              {this.props.item.hot === 'true' && "hot"}
+              {this.props.item.hot === true && "hot"}
             </div>
           </CardContent>
         </CardActionArea>

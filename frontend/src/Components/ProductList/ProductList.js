@@ -103,12 +103,12 @@ class ProductList extends Component {
     let results = await Api.searchItems({
       category: this.getParamFromQS("category", props),
       term: this.getParamFromQS("term", props),
-      page: this.getParamFromQS("page", props),
+      sortValue: this.getParamFromQS("sortValue", props),
       itemsPerPage: this.getParamFromQS("itemsPerPage", props),
+      usePriceFilter: this.getParamFromQS("usePriceFilter", props),
       minPrice: this.getParamFromQS("minPrice", props),
       maxPrice: this.getParamFromQS("maxPrice", props),
-      sortValue: this.getParamFromQS("sortValue", props),
-      usePriceFilter: this.getParamFromQS("usePriceFilter", props)
+      page: this.getParamFromQS("page", props),
     });
     this.setState(ps => ({
       items: results.data,

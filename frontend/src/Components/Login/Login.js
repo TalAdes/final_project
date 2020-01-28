@@ -123,7 +123,7 @@ class ConnectedLogin extends Component {
           <Button
             style={{ marginTop: 10 }}
             disabled={  !this.state.userName.toString().replace(/\s/g, '').length ||
-                        !this.state.pass.toString().replace(/\s/g, '').length
+                        !this.state.pass.toString().replace(/\s/g, '').length ||
                         !this.state.captcha
                       }
             variant="outlined"

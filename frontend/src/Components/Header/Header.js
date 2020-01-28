@@ -136,27 +136,6 @@ class ConnectedHeader extends Component {
               Search
             </Button>
 
-
-
-            <Button
-              style={{ marginLeft: 20 }}
-              variant="outlined"
-              color="primary"
-              onClick={() => {
-                Api.tryyyy().then(x => console.log(x))
-                Api.tryyyy().then(x => console.log(x))
-                // Api.whoIsLoged().then(x => alert(x.data))
-                // Api.getMyLastOrders().then(x => console.log(x.data))
-              //   axios.get('/chat/get_PK_and_random').then(res => {
-              //     alert(res)})
-            }}
-            >
-              TEST fetch data from db
-            </Button>
-
-
-
-
           </div>
           <div className="right-part">
             {!this.props.loggedInUser ? 

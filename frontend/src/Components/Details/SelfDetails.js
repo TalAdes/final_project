@@ -88,8 +88,6 @@ class UserDetails extends Component {
         {/* img */}
         <div
           style={{
-            width: 200,
-            height: 270,
             paddingTop: 5,
             paddingBottom: 5,
             paddingLeft: 40,
@@ -100,7 +98,6 @@ class UserDetails extends Component {
         >
         <img
           alt=""
-          style={ { height: '100%', width: '100%'}}
           src={"/" + this.state.item.src}
         />  
         </div>
