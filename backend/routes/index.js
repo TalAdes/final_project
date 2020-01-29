@@ -490,7 +490,8 @@ router.post('/authorized_getFlowerDataUsingID', function (req, res) {
 
 router.post('/authorized_updateUsersDataToDB', async function (req, res) {
 
-	if(!req.user || req.user.role !== 'admin'){
+	if(!req.user || (req.user && req.body.user.name !== req.user.name )){
+		
 		res.send('hacker....')
 		return
 	}

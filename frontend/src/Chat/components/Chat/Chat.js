@@ -9,6 +9,7 @@ import Messages from '../Messages/Messages';
 import InfoBar from '../InfoBar/InfoBar';
 import Input from '../Input/Input';
 import Auth from "../../../Auth";
+import Api from "../../../Api";
 
 import './Chat.css';
 
@@ -25,6 +26,7 @@ const mapStateToProps = state => {
 const Chat = (props) => {
   const [name] = useState(props.loggedInUser);
   const [room] = useState(props.roomID);
+  const [chat, setChat] = useState({name:""});
   const [users, setUsers] = useState('');
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
@@ -44,6 +46,10 @@ const Chat = (props) => {
         props.history.push("/chat");
       }
     });
+
+    Api.getChatByID(props.roomID).then(data =>{
+      setChat(data.data[0])
+    })
 
     //at this moment this user is in thr chat, noe i need to show all the beuty
 
@@ -67,21 +73,6 @@ const Chat = (props) => {
       console.log(`client - got message event
       \nmessage :${message.text}`);
     });
-
-    // socket.on('retrieveMessages', (_messages) => {
-    //   console.log('client - got retrive history event');
-    //   _messages.messages.forEach(element => {
-    //     setTimeout(async function(){ 
-    //       setMessages([...messages, element ]);
-    //     }, 3000);
-    //   });
-    // });
-
-      // for (let index = 0; index < _messages.messages.length; index++) {
-      //   console.log('retrive history '+ _messages.messages[index].text);
-      //   setMessages([...messages, _messages.messages[index] ]);
-      // }
-
 
 
     socket.on('roomData', ({ users }) => {
@@ -115,7 +106,7 @@ const Chat = (props) => {
   return (
     <div className="outerContainer">
       <div className="container">
-          <InfoBar props = {props} room={room}/>
+          <InfoBar props = {props} room={chat.name}/>
           <Messages socket={socket} counter={counter} setCounter={setCounter} messages={messages} name={name} />
           <Input message={message} setMessage={setMessage} sendMessage={_sendMessage} />
       </div>

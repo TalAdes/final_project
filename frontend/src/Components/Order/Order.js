@@ -98,14 +98,7 @@ class ConnectedOrder extends Component {
           </TableBody>
         </Table>
 
-        <div
-          // style={{
-          //   color: "#504F5A",
-          //   marginLeft: 5,
-          //   marginTop: 50,
-          //   fontSize: 22
-          // }}
-        >
+        <div>
           Total price: {totalPrice} $
         </div>
         
@@ -120,17 +113,7 @@ class ConnectedOrder extends Component {
           Discard
         </Button>
       {/* <StripPayment that={this} /> */}
-        <div onClick={() => {
-          // setTimeout(
-          //   () =>
-          //     {
-          //       this.props.dispatch(setCheckedOutItems([]));
-          //       this.props.dispatch(setCartItems([]));
-          //       Api.setCartItemsMongoDB([])
-          //     }
-          // ,3000);
-        }}>
-
+        <div>
           <StripeCheckout
             stripeKey="pk_test_5vKC2C8nXDr2zF7U4fAUk0j60045VLH3vN"
             token={this.handleToken}

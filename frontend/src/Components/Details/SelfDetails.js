@@ -16,6 +16,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import { setLoggedInUserEmail } from "../../Redux/Actions";
 
 const mapStateToProps = state => {
   return {   
@@ -180,23 +181,19 @@ class UserDetails extends Component {
             temp.name = this.state.name
             temp.email = this.state.email
             Api.updateUsersDataToDB(temp).then((res)=>{
-              if (res.data) {
-                alert(res.data)
-                this.props.history.push("/user_CRUD");
-                return
-              }
               res = res.data;
               this.setState(ps => ({
-                    item: res,
-                    unfinishedTasks: ps.unfinishedTasks - 1,
-                }));
+                item: res,
+                unfinishedTasks: ps.unfinishedTasks - 1,
+              }));
+              this.props.dispatch(setLoggedInUserEmail(this.state.email));
             })
           }}
         >
           save <SaveAltIcon style={{ marginLeft: 5 }} />
         </Button>
         
-        {/* delete button */}
+        {/* delete button
         <Button
           style={{ width: 200, marginTop: 5 }}
           color="primary"
@@ -218,7 +215,7 @@ class UserDetails extends Component {
           }}
         >
           delete <DeleteIcon style={{ marginLeft: 5 }} />
-        </Button>
+        </Button> */}
         
         
         </div>
